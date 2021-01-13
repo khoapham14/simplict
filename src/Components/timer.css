@@ -1,0 +1,23 @@
+#timer-container{
+    display: flex;
+    height: 100vh;
+    background-image: url("/src/Assets/Sublime.jpg");
+    background-size: 100% 75%;
+    background-position: center top;
+    background-repeat: no-repeat;
+}
+
+#timer-container:focus{
+    outline: none;
+}
+
+#timer-text{
+    font-family: 'Exo', sans-serif;
+    font-size: 10em;
+    text-align: center;
+    color: #FFFFFF;
+    padding-top: 4%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
