@@ -1,0 +1,8 @@
+#simplict{
+    display: flex;
+    height: 100vh;
+    background-image: url("/src/Assets/Sublime.jpg");
+    background-size: 100% 75%;
+    background-position: center top;
+    background-repeat: no-repeat;
+}

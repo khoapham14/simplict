@@ -1,4 +1,5 @@
 import React from 'react';
+import refresh from '../Assets/Refresh_icon.png';
 import "./scrambler.css";
 
 class Scrambler extends React.Component {
@@ -14,6 +15,16 @@ class Scrambler extends React.Component {
         this.getRandomInt = this.getRandomInt.bind(this)
     }
 
+    componentDidMount(){
+        //Generates an initial scramble
+        this.scramble();
+    }
+
+    componentWillUnmount(){
+
+    }
+
+    // Creates an array of sides and shuffles the element randomly
     shuffle() {
         var scr_array = ["R", "U", "D", "L", "F", "B"];
         var currentIndex = scr_array.length, temporaryValue, randomIndex;
@@ -30,6 +41,7 @@ class Scrambler extends React.Component {
         return scr_array;
     }
 
+    // Removes consecutive duplicates from an array to prevent redundant moves
     removeDuplicates(array, len = 0, canDelete = false) {
         if (len < array.length) {
             if (canDelete) {
@@ -42,10 +54,12 @@ class Scrambler extends React.Component {
         return;
     }
 
+    // Generates a random number from a range indicated by max.
     getRandomInt(max) {
         return Math.floor(Math.random() * Math.floor(max));
     }
 
+    // Generate a scramble
     scramble() {
 
         var array_1 = this.shuffle();
@@ -59,6 +73,7 @@ class Scrambler extends React.Component {
 
         var i;
 
+        // Using RNG to randomly choose how to turn for each move.
         for (i = 0; i < final_scr.length; i++) {
             switch (final_scr[i]) {
                 case "R":
@@ -161,16 +176,17 @@ class Scrambler extends React.Component {
         }
 
         final_scr = final_scr.join(" ");
-
-        return final_scr;
-
+        this.setState({ scramble: final_scr});
     }
 
+
     render() {
-        return (
-            <div id="scramble">
-                {this.scramble()}
+        return (  
+            <div id="scramble"> 
+                {this.state.scramble}
+                <img src={refresh} onClick={this.scramble} id="refresh_icon"/>
             </div>
+            
 
         );
     }

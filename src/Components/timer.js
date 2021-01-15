@@ -1,6 +1,5 @@
 import React from 'react';
 import ms from 'pretty-ms';
-import Scrambler from './scrambler.js';
 import { Row, Col, Container } from 'react-bootstrap';
 import "./timer.css";
 
@@ -59,7 +58,6 @@ class Timer extends React.Component {
     stopTimer() {
         this.setState({
             isOn: false,
-            result: this.state.time
         })
         clearInterval(this.timer)
     }
@@ -77,22 +75,15 @@ class Timer extends React.Component {
             <div onKeyUp={this.handleSpace} tabIndex="0" id="timer-container">
                 <Container>
                     <Row>
-                        <Scrambler />
-                    </Row>
-                    <Row>
                         <p id="timer-text"> {this.state.time} </p>
-                    </Row>
+                    </Row>  
                     <Row>
-                        <Col md={6}>
-                            <p>Statistics</p>
-                        </Col>
-                        <Col md={3}>
-                            <p>Statistics</p>
-                        </Col>
-                        <Col md={3}>
-                            <p>Statistics</p>
-                        </Col>
+                    <p id="avg-text"> ao5:  </p>    
+                    </Row>      
+                    <Row>
+                    <p id="avg-text"> ao12: </p>
                     </Row>
+                                   
                 </Container>
             </div>
         );
