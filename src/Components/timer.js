@@ -1,5 +1,7 @@
 import React from 'react';
 import ms from 'pretty-ms';
+import Scrambler from './scrambler.js';
+import { Row, Col, Container } from 'react-bootstrap';
 import "./timer.css";
 
 class Timer extends React.Component {
@@ -15,19 +17,16 @@ class Timer extends React.Component {
         this.startTimer = this.startTimer.bind(this)
         this.stopTimer = this.stopTimer.bind(this)
         this.resetTimer = this.resetTimer.bind(this)
-        this.formatTime = this.formatTime.bind(this)
         this.handleSpace = this.handleSpace.bind(this)
     }
 
     componentDidMount() {
         window.addEventListener("resize", this.handleWindowSizeChange);
-        window.addEventListener("scroll", this.handleScroll, true);
         window.addEventListener("spacebar", this.handleSpace, true);
     }
 
     componentWillUnmount() {
         window.removeEventListener("resize", this.handleWindowSizeChange);
-        window.removeEventListener("scroll", this.handleScroll, true);
         window.removeEventListener("spacebar", this.handleSpace, true);
     }
 
@@ -57,18 +56,16 @@ class Timer extends React.Component {
 
     }
 
-    stopTimer(){
-        this.setState({ isOn: false,
-                        result: this.state.time })
+    stopTimer() {
+        this.setState({
+            isOn: false,
+            result: this.state.time
+        })
         clearInterval(this.timer)
     }
 
     resetTimer() {
         this.setState({ time: 0 })
-    }
-
-    formatTime() {
-        this.setState({ time: ms(this.state.time, { colonNotation: true }) })
     }
 
     exportTime() {
@@ -78,10 +75,28 @@ class Timer extends React.Component {
     render() {
         return (
             <div onKeyUp={this.handleSpace} tabIndex="0" id="timer-container">
-                <p id="timer-text"> {this.state.time} </p>
+                <Container>
+                    <Row>
+                        <Scrambler />
+                    </Row>
+                    <Row>
+                        <p id="timer-text"> {this.state.time} </p>
+                    </Row>
+                    <Row>
+                        <Col md={6}>
+                            <p>Statistics</p>
+                        </Col>
+                        <Col md={3}>
+                            <p>Statistics</p>
+                        </Col>
+                        <Col md={3}>
+                            <p>Statistics</p>
+                        </Col>
+                    </Row>
+                </Container>
             </div>
         );
-    } 
+    }
 
 }
 
