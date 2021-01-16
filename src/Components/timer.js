@@ -82,9 +82,9 @@ class Timer extends React.Component {
                     </Row>      
                     <Row>
                     <p id="avg-text"> ao12: </p>
-                    </Row>
-                                   
+                    </Row>               
                 </Container>
+                <p> Stats </p>
             </div>
         );
     }

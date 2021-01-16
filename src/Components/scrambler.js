@@ -13,15 +13,17 @@ class Scrambler extends React.Component {
         this.scramble = this.scramble.bind(this)
         this.removeDuplicates = this.removeDuplicates.bind(this)
         this.getRandomInt = this.getRandomInt.bind(this)
+        this.refreshScramble = this.refreshScramble.bind(this)
     }
 
     componentDidMount(){
         //Generates an initial scramble
         this.scramble();
+
     }
 
     componentWillUnmount(){
-
+        clearTimeout(this.refreshScramble);
     }
 
     // Creates an array of sides and shuffles the element randomly
@@ -179,15 +181,16 @@ class Scrambler extends React.Component {
         this.setState({ scramble: final_scr});
     }
 
+    refreshScramble(){
+        setTimeout(this.scramble, 500);
+    }
 
     render() {
         return (  
             <div id="scramble"> 
-                {this.state.scramble}
-                <img src={refresh} onClick={this.scramble} id="refresh_icon"/>
+                {this.state.scramble} 
+                <img src={refresh} onClick={this.refreshScramble} id="refresh_icon"/>
             </div>
-            
-
         );
     }
 }

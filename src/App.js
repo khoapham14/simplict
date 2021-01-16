@@ -14,9 +14,7 @@ function App() {
         <Row>
         <Timer />
         </Row>
-      </Container>
-      
-      
+      </Container>      
     </div>
   );
 }
