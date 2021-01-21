@@ -1,6 +1,6 @@
 import React from 'react';
 import ms from 'pretty-ms';
-import { Row, Col, Container } from 'react-bootstrap';
+import { Row, Container } from 'react-bootstrap';
 import "./timer.css";
 
 class Timer extends React.Component {
@@ -76,15 +76,8 @@ class Timer extends React.Component {
                 <Container>
                     <Row>
                         <p id="timer-text"> {this.state.time} </p>
-                    </Row>  
-                    <Row>
-                    <p id="avg-text"> ao5:  </p>    
-                    </Row>      
-                    <Row>
-                    <p id="avg-text"> ao12: </p>
-                    </Row>               
+                    </Row>              
                 </Container>
-                <p> Stats </p>
             </div>
         );
     }

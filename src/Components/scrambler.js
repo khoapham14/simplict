@@ -189,7 +189,7 @@ class Scrambler extends React.Component {
         return (  
             <div id="scramble"> 
                 {this.state.scramble} 
-                <img src={refresh} onClick={this.refreshScramble} id="refresh_icon"/>
+                <img src={refresh} onClick={this.refreshScramble} id="refresh_icon" alt="refresh_button"/>
             </div>
         );
     }
