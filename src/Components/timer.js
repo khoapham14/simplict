@@ -1,6 +1,6 @@
 import React from 'react';
 import ms from 'pretty-ms';
-import { Row, Container } from 'react-bootstrap';
+import { Row, Container, Button } from 'react-bootstrap';
 import "./timer.css";
 
 class Timer extends React.Component {
@@ -11,12 +11,14 @@ class Timer extends React.Component {
             start: 0,
             isOn: false,
             result: 0,
+            record: [],
         };
 
         this.startTimer = this.startTimer.bind(this)
         this.stopTimer = this.stopTimer.bind(this)
         this.resetTimer = this.resetTimer.bind(this)
         this.handleSpace = this.handleSpace.bind(this)
+        this.clearRecord = this.clearRecord.bind(this)
     }
 
     componentDidMount() {
@@ -36,6 +38,7 @@ class Timer extends React.Component {
             }
             else {
                 this.stopTimer();
+                this.exportTime();
                 this.resetTimer();
             }
         }
@@ -50,7 +53,7 @@ class Timer extends React.Component {
 
 
         this.timer = setInterval(() => this.setState({
-            time: ms(Date.now() - this.state.start, { colonNotaiton: true })
+            time: ms(Date.now() - this.state.start)
         }), 1);
 
     }
@@ -67,7 +70,11 @@ class Timer extends React.Component {
     }
 
     exportTime() {
+        this.setState({ record: this.state.record.concat(this.state.time.replace('s', '  '))});
+    }
 
+    clearRecord(){
+        this.setState({ record: []});
     }
 
     render() {
@@ -78,6 +85,8 @@ class Timer extends React.Component {
                         <p id="timer-text"> {this.state.time} </p>
                     </Row>              
                 </Container>
+                <Button onClick={this.clearRecord}> Clear </Button>
+                <p> {this.state.record} </p>
             </div>
         );
     }
