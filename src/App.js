@@ -1,7 +1,6 @@
 import React from 'react';
 import Timer from './Components/timer.js';
 import Scrambler from './Components/scrambler.js';
-import Stats from './Components/statistics.js';
 import { Row, Container, Col } from "react-bootstrap";
 import './App.css';
 
@@ -15,9 +14,6 @@ function App() {
           </Row>
           <Row>
             <Timer />
-          </Row>
-          <Row>
-            <Stats />
           </Row>
         </Container>
       </div>

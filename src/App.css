@@ -42,3 +42,10 @@
     font-size: 0.7em;
     text-align: left;
 }
+
+#avg-text{
+    font-family: 'Exo', sans-serif;
+    font-size: 2em;
+    line-height: 1em;
+    color: #FFFFFF;
+}

@@ -1,6 +1,7 @@
 import React from 'react';
 import ms from 'pretty-ms';
-import { Row, Container, Button } from 'react-bootstrap';
+import Stats from './statistics.js';
+import { Row, Container } from 'react-bootstrap';
 import "./timer.css";
 
 class Timer extends React.Component {
@@ -70,7 +71,7 @@ class Timer extends React.Component {
     }
 
     exportTime() {
-        this.setState({ record: this.state.record.concat(this.state.time.replace('s', '  '))});
+        this.setState({ record: this.state.record.concat(this.state.time.replace('m', '').replace('s', '  '))});
     }
 
     clearRecord(){
@@ -82,12 +83,12 @@ class Timer extends React.Component {
             <div onKeyUp={this.handleSpace} tabIndex="0" id="timer-container">
                 <Container>
                     <Row>
-                        <p id="timer-text"> {this.state.time} </p>
+                        <p id="timer-text"> {this.state.time} </p> 
                     </Row>              
-                </Container>
-                <Button onClick={this.clearRecord}> Clear </Button>
-                <p> {this.state.record} </p>
+                </Container> 
+                <Stats record={this.state.record} clearRecord={this.clearRecord} />
             </div>
+            
         );
     }
 
