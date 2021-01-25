@@ -2,18 +2,21 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
-    padding-top: 5%;
+    text-align: center;
 }
 
 #timer-container:focus{
     outline: none;
 }
 
-#timer-text{
+#timer-text{    
+    display: block;
+    padding-left: auto;
+    margin-right: auto;
     font-family: 'Exo', sans-serif;
     font-size: 15em;
     color: #FFFFFF;
-    padding-top: 4%;
+    padding-top: 2%;
 }
 
 

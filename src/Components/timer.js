@@ -1,7 +1,8 @@
 import React from 'react';
 import ms from 'pretty-ms';
+import { Row } from 'react-bootstrap';
 import Stats from './statistics.js';
-import { Row, Container } from 'react-bootstrap';
+import Scrambler from './scrambler.js';
 import "./timer.css";
 
 class Timer extends React.Component {
@@ -23,13 +24,13 @@ class Timer extends React.Component {
     }
 
     componentDidMount() {
-        window.addEventListener("resize", this.handleWindowSizeChange);
-        window.addEventListener("spacebar", this.handleSpace, true);
+        document.addEventListener("resize", this.handleWindowSizeChange);
+        document.addEventListener("spacebar", this.handleSpace, true);
     }
 
     componentWillUnmount() {
-        window.removeEventListener("resize", this.handleWindowSizeChange);
-        window.removeEventListener("spacebar", this.handleSpace, true);
+        document.removeEventListener("resize", this.handleWindowSizeChange);
+        document.removeEventListener("spacebar", this.handleSpace, true);
     }
 
     handleSpace(e) {
@@ -71,24 +72,22 @@ class Timer extends React.Component {
     }
 
     exportTime() {
-        this.setState({ record: this.state.record.concat(this.state.time.replace('m', '').replace('s', '  '))});
+        this.setState({ record: this.state.record.concat(this.state.time.replace('m', '').replace('s', '  ')) });
     }
 
-    clearRecord(){
-        this.setState({ record: []});
+    clearRecord() {
+        this.setState({ record: [] });
     }
 
     render() {
         return (
             <div onKeyUp={this.handleSpace} tabIndex="0" id="timer-container">
-                <Container>
-                    <Row>
-                        <p id="timer-text"> {this.state.time} </p> 
-                    </Row>              
-                </Container> 
+                <Row>
+                    <Scrambler handleSpace={this.handleSpace} />
+                </Row>
+                <p id="timer-text"> {this.state.time} </p>
                 <Stats record={this.state.record} clearRecord={this.clearRecord} />
             </div>
-            
         );
     }
 

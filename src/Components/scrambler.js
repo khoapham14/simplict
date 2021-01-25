@@ -6,7 +6,8 @@ class Scrambler extends React.Component {
     constructor() {
         super();
         this.state = {
-            scramble: ''
+            scramble: '',
+            time: '',
         };
 
         this.shuffle = this.shuffle.bind(this)
@@ -20,10 +21,21 @@ class Scrambler extends React.Component {
         //Generates an initial scramble
         this.scramble();
 
+        document.addEventListener("space", this.handleSpace, true); 
     }
 
     componentWillUnmount(){
         clearTimeout(this.refreshScramble);
+        document.removeEventListener("space", this.handleSpace, true); 
+    }
+
+    handleSpace(e){
+
+        this.props.handleSpace();
+        if(e.keyCode === 32){
+            this.refreshScramble();
+        }
+        
     }
 
     // Creates an array of sides and shuffles the element randomly

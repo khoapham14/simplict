@@ -1,6 +1,5 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
-import Timer from './timer.js';
+import { Button, Row, Col } from 'react-bootstrap';
 import "./statistics.css";
 
 class Stats extends React.Component {
@@ -13,6 +12,8 @@ class Stats extends React.Component {
       ao50: 0,
       best: 0,
       worst: 0,
+      session_average: "",
+      session_mean: "",
     };
 
     this.avg_of_5 = this.avg_of_5.bind(this)
@@ -53,7 +54,7 @@ class Stats extends React.Component {
       this.setState({
         best: this.state.record.shift(),
         worst: this.state.record.pop(),
-        ao5: (this.stringToInt(this.state.record).reduce((a, b) => a + b, 0)) / 3,
+        ao5: ((this.stringToInt(this.state.record).reduce((a, b) => a + b, 0)) / 3).toFixed(2),
       });
     }
 
@@ -72,7 +73,7 @@ class Stats extends React.Component {
       this.setState({
         best: this.state.record.shift(),
         worst: this.state.record.pop(),
-        ao12: (this.stringToInt(this.state.record).reduce((a, b) => a + b, 0)) / 10,
+        ao12: ((this.stringToInt(this.state.record).reduce((a, b) => a + b, 0)) / 10).toFixed(2),
       });
     }
 
@@ -91,7 +92,7 @@ class Stats extends React.Component {
       this.setState({
         best: this.state.record.shift(),
         worst: this.state.record.pop(),
-        ao12: (this.stringToInt(this.state.record).reduce((a, b) => a + b, 0)) / 48,
+        ao50: ((this.stringToInt(this.state.record).reduce((a, b) => a + b, 0)) / 48).toFixed(2),
       });
     }
 
@@ -104,19 +105,62 @@ class Stats extends React.Component {
       ao5: "",
       ao12: "",
       ao50: "",
+      best: "",
+      worst: "",
     })
   }
 
   render() {
     return (
-      <div id="avg-container">
-        <Button onClick={this.clearRecord}> Clear Record </Button>
-        <p id="avg-text"> {this.props.record} </p>
-        <p id="avg-text"> ao5: {this.state.ao5} </p>
-        <p id="avg-text"> ao12: {this.state.ao12}</p>
-        <p id="avg-text"> ao50: {this.state.ao50} </p>
-        
-      </div>
+      <React.Fragment>
+        <div id="avg-container">
+          
+          <p id="avg-text">  </p>
+          <p id="avg-text"> ao5: {this.state.ao5} </p>
+          <p id="avg-text"> ao12: {this.state.ao12}</p>
+          <p id="avg-text"> ao50: {this.state.ao50} </p>
+        </div>
+        <Row id="dashboard">
+          <Col md={3} id="s_section">
+            <p> Settings </p>
+            <Row>
+              <Col md={12} id="settings">
+                <p> Inspection: </p>
+                <p> Timing Style: </p>
+                <p> Fullscreen during solve: </p>
+                <p> Background theme:  </p>
+              </Col>
+            </Row>
+          </Col>
+          <Col md={6} id="s_section">
+            <p> Statistics </p>
+            <Row>
+              <Col md={8} id="recorded_times">
+                {this.props.record}
+              </Col>
+              <Col md={4} id="main_stats">
+                <p> Session Best: {this.state.best} </p>
+                <p> Session Worst: {this.state.worst} </p>
+                <p> Session Average:  </p>
+                <p> Session Mean:  </p>
+                <Button variant="outline-dark" onClick={this.clearRecord}> Reset </Button>
+              </Col>
+            </Row>
+          </Col>
+          <Col md={3}>
+            <p> Scramble </p>
+            <Row>
+              <Col md={8} id="scramble_settings">
+                <p> Cube Type </p>
+                <p> Scramble Style </p>
+              </Col>
+              <Col md={4}>
+                <p> image of cube </p>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </React.Fragment>
     );
   }
 

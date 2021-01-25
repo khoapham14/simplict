@@ -2,5 +2,50 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
+    width: 100vw;
 }
 
+#dashboard{
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    background-color: rgba(240, 240, 240, 1);
+    height: 25vh;
+    width: 100vw;
+    color: #939393;
+    font-weight: 500;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+#s_section{
+    border-right: 1px solid grey;
+}
+
+#recorded_times{
+    font-size: 0.7em;
+    text-align: left;
+    background-color: white;
+}
+
+#main_stats{
+    font-size: 0.7em;
+    text-align: left;
+}
+
+#settings{
+    font-size: 0.7em;
+    text-align: left;
+    margin-left: 1%;
+}
+
+#scramble_settings{
+    font-size: 0.7em;
+    text-align: left;
+}
+
+#avg-text{
+    font-size: 2em;
+    line-height: 1em;
+    color: #FFFFFF;
+}
