@@ -8,6 +8,7 @@ class Scrambler extends React.Component {
         this.state = {
             scramble: '',
             time: '',
+            solve_started: false,
         };
 
         this.shuffle = this.shuffle.bind(this)
@@ -15,27 +16,29 @@ class Scrambler extends React.Component {
         this.removeDuplicates = this.removeDuplicates.bind(this)
         this.getRandomInt = this.getRandomInt.bind(this)
         this.refreshScramble = this.refreshScramble.bind(this)
+        this.refreshOnSolve = this.refreshOnSolve.bind(this)
     }
 
-    componentDidMount(){
+    componentDidMount() {
         //Generates an initial scramble
         this.scramble();
+        document.addEventListener("refresh_scr", this.refreshOnSolve, true)
 
-        document.addEventListener("space", this.handleSpace, true); 
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         clearTimeout(this.refreshScramble);
-        document.removeEventListener("space", this.handleSpace, true); 
+        document.removeEventListener("refresh_scr", this.refreshOnSolve, true)
     }
 
-    handleSpace(e){
-
-        this.props.handleSpace();
-        if(e.keyCode === 32){
+    refreshOnSolve() {
+        if (this.props.refresh === true) {
             this.refreshScramble();
+            console.log("Refresh");
         }
-        
+        else { 
+            
+        }
     }
 
     // Creates an array of sides and shuffles the element randomly
@@ -190,18 +193,19 @@ class Scrambler extends React.Component {
         }
 
         final_scr = final_scr.join(" ");
-        this.setState({ scramble: final_scr});
+        this.setState({ scramble: final_scr });
     }
 
-    refreshScramble(){
+    refreshScramble() {
         setTimeout(this.scramble, 500);
     }
 
     render() {
-        return (  
-            <div id="scramble"> 
-                {this.state.scramble} 
-                <img src={refresh} onClick={this.refreshScramble} id="refresh_icon" alt="refresh_button"/>
+        return (
+            <div id="scramble">
+                {this.state.scramble}
+                {this.refreshOnSolve()}
+                <img src={refresh} onClick={this.refreshScramble} id="refresh_icon" alt="refresh_button" />
             </div>
         );
     }

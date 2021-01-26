@@ -14,6 +14,7 @@ class Timer extends React.Component {
             isOn: false,
             result: 0,
             record: [],
+            refresh: false,
         };
 
         this.startTimer = this.startTimer.bind(this)
@@ -21,6 +22,7 @@ class Timer extends React.Component {
         this.resetTimer = this.resetTimer.bind(this)
         this.handleSpace = this.handleSpace.bind(this)
         this.clearRecord = this.clearRecord.bind(this)
+        this.refresh = this.refresh.bind(this)
     }
 
     componentDidMount() {
@@ -40,8 +42,8 @@ class Timer extends React.Component {
             }
             else {
                 this.stopTimer();
-                this.exportTime();
-                this.resetTimer();
+                this.setState({ refresh: true });
+                setTimeout(this.refresh, 500);
             }
         }
     }
@@ -60,15 +62,25 @@ class Timer extends React.Component {
 
     }
 
+    refresh() {
+        this.setState({ refresh: false });
+        this.exportTime();  
+        this.resetTimer();
+    }
+
     stopTimer() {
         this.setState({
             isOn: false,
+            refresh: true,
         })
         clearInterval(this.timer)
     }
 
     resetTimer() {
-        this.setState({ time: 0 })
+        this.setState({
+            time: 0,
+            refresh: false
+        })
     }
 
     exportTime() {
@@ -83,7 +95,7 @@ class Timer extends React.Component {
         return (
             <div onKeyUp={this.handleSpace} tabIndex="0" id="timer-container">
                 <Row>
-                    <Scrambler handleSpace={this.handleSpace} />
+                    <Scrambler refresh={this.state.refresh} />
                 </Row>
                 <p id="timer-text"> {this.state.time} </p>
                 <Stats record={this.state.record} clearRecord={this.clearRecord} />
