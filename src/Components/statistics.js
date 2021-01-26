@@ -21,6 +21,8 @@ class Stats extends React.Component {
     this.avg_of_50 = this.avg_of_50.bind(this)
     this.stringToInt = this.stringToInt.bind(this)
     this.clearRecord = this.clearRecord.bind(this)
+    this.getBest = this.getBest.bind(this)
+    this.getWorst = this.getWorst.bind(this)
   }
 
   componentDidMount() {
@@ -29,8 +31,10 @@ class Stats extends React.Component {
     setInterval(() => this.setState({
       ao5: this.avg_of_5(),
       ao12: this.avg_of_12(),
-      ao50: this.avg_of_50()
-    }), 1000)
+      ao50: this.avg_of_50(),
+      best: this.getBest(),
+      worst: this.getWorst(),
+    }), 500)
   }
 
   componentWillUnmount() {
@@ -42,6 +46,22 @@ class Stats extends React.Component {
     return array.map(Number);
   }
 
+  getBest(){
+    var session = [];
+    session = session.concat(this.props.record);
+    session.sort(function (a, b) { return a - b });
+
+    return session.shift();
+  }
+
+  getWorst(){
+    var session = [];
+    session = session.concat(this.props.record);
+    session.sort(function (a, b) { return a - b });
+
+    return session.pop();
+  }
+
   avg_of_5() {
     if (this.props.record.length >= 5) {
       var i = this.props.record.length - 1;
@@ -51,9 +71,10 @@ class Stats extends React.Component {
       }
       this.setState({ record: solves })
       this.state.record.sort(function (a, b) { return a - b });
+      this.state.record.shift();
+      this.state.record.pop();
+
       this.setState({
-        best: this.state.record.shift(),
-        worst: this.state.record.pop(),
         ao5: ((this.stringToInt(this.state.record).reduce((a, b) => a + b, 0)) / 3).toFixed(2),
       });
     }
@@ -70,9 +91,9 @@ class Stats extends React.Component {
       }
       this.setState({ record: solves })
       this.state.record.sort(function (a, b) { return a - b });
+      this.state.record.shift();
+      this.state.record.pop();
       this.setState({
-        best: this.state.record.shift(),
-        worst: this.state.record.pop(),
         ao12: ((this.stringToInt(this.state.record).reduce((a, b) => a + b, 0)) / 10).toFixed(2),
       });
     }
@@ -89,9 +110,9 @@ class Stats extends React.Component {
       }
       this.setState({ record: solves })
       this.state.record.sort(function (a, b) { return a - b });
+      this.state.record.shift();
+      this.state.record.pop();
       this.setState({
-        best: this.state.record.shift(),
-        worst: this.state.record.pop(),
         ao50: ((this.stringToInt(this.state.record).reduce((a, b) => a + b, 0)) / 48).toFixed(2),
       });
     }
