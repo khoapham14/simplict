@@ -49,3 +49,12 @@
     line-height: 1em;
     color: #FFFFFF;
 }
+
+#reset-button{
+    border-color: #939393;
+    color: #939393;
+}
+
+#reset-button:hover{
+    color: #FFFFFF;
+}

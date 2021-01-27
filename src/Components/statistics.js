@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Row, Col } from 'react-bootstrap';
+import { Line } from 'react-chartjs-2';
 import "./statistics.css";
 
 class Stats extends React.Component {
@@ -46,7 +47,7 @@ class Stats extends React.Component {
     return array.map(Number);
   }
 
-  getBest(){
+  getBest() {
     var session = [];
     session = session.concat(this.props.record);
     session.sort(function (a, b) { return a - b });
@@ -54,7 +55,7 @@ class Stats extends React.Component {
     return session.shift();
   }
 
-  getWorst(){
+  getWorst() {
     var session = [];
     session = session.concat(this.props.record);
     session.sort(function (a, b) { return a - b });
@@ -128,31 +129,37 @@ class Stats extends React.Component {
       ao50: "",
       best: "",
       worst: "",
+      record: "",
     })
   }
 
   render() {
+
+    const graph = {
+      labels: ['1', '2', '3', '4', '5'],
+      datasets: [
+        {
+          label: 'Solve Times',
+          fill: false,
+          lineTension: 0.5,
+          backgroundColor: '#FFFFFF',
+          borderColor: '#939393',
+          borderWidth: 1,
+          data: this.state.record
+        }
+      ]
+    }
+
     return (
       <React.Fragment>
         <div id="avg-container">
-          
+
           <p id="avg-text">  </p>
           <p id="avg-text"> ao5: {this.state.ao5} </p>
           <p id="avg-text"> ao12: {this.state.ao12}</p>
           <p id="avg-text"> ao50: {this.state.ao50} </p>
         </div>
         <Row id="dashboard">
-          <Col md={3} id="s_section">
-            <p> Settings </p>
-            <Row>
-              <Col md={12} id="settings">
-                <p> Inspection: </p>
-                <p> Timing Style: </p>
-                <p> Fullscreen during solve: </p>
-                <p> Background theme:  </p>
-              </Col>
-            </Row>
-          </Col>
           <Col md={6} id="s_section">
             <p> Statistics </p>
             <Row>
@@ -164,21 +171,25 @@ class Stats extends React.Component {
                 <p> Session Worst: {this.state.worst} </p>
                 <p> Session Average:  </p>
                 <p> Session Mean:  </p>
-                <Button variant="outline-dark" onClick={this.clearRecord}> Reset </Button>
+                <Button variant="outline-dark" id="reset-button" onClick={this.clearRecord}> Reset </Button>
               </Col>
             </Row>
           </Col>
-          <Col md={3}>
-            <p> Scramble </p>
-            <Row>
-              <Col md={8} id="scramble_settings">
-                <p> Cube Type </p>
-                <p> Scramble Style </p>
-              </Col>
-              <Col md={4}>
-                <p> image of cube </p>
-              </Col>
-            </Row>
+          <Col md={6} id="chart_section">
+            <p> Performance Data </p>
+            <Line data={graph}
+              width={"30%"}
+              height={"6%"}
+              options={{ maintainAspectRatio: true,
+                scales: {
+                  yAxes: [{
+                    ticks: {
+                      beginAtZero: true
+                    }
+                  }]
+                }
+              }}
+            />
           </Col>
         </Row>
       </React.Fragment>
