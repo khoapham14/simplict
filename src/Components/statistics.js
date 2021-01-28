@@ -7,14 +7,16 @@ class Stats extends React.Component {
   constructor() {
     super();
     this.state = {
-      record: [0],
+      record: [],
       ao5: 0,
       ao12: 0,
       ao50: 0,
       best: 0,
       worst: 0,
-      session_average: "",
-      session_mean: "",
+      session_average: 0,
+      session_mean: 0,
+      full_record: [],
+      x_axis: [],
     };
 
     this.avg_of_5 = this.avg_of_5.bind(this)
@@ -24,6 +26,9 @@ class Stats extends React.Component {
     this.clearRecord = this.clearRecord.bind(this)
     this.getBest = this.getBest.bind(this)
     this.getWorst = this.getWorst.bind(this)
+    this.getSessionAvg = this.getSessionAvg.bind(this)
+    this.deleteLastSolve = this.deleteLastSolve.bind(this)
+    this.generateX = this.generateX.bind(this)
   }
 
   componentDidMount() {
@@ -35,6 +40,9 @@ class Stats extends React.Component {
       ao50: this.avg_of_50(),
       best: this.getBest(),
       worst: this.getWorst(),
+      session_average: this.getSessionAvg(),
+      session_mean: this.getSessionMean(),
+      x_axis: this.generateX(),
     }), 500)
   }
 
@@ -45,6 +53,15 @@ class Stats extends React.Component {
 
   stringToInt(array) {
     return array.map(Number);
+  }
+
+  generateX() {
+    var labels = []
+    for (var i = 1; i <= this.props.record.length; i++) {
+      labels = labels.concat(i);
+    }
+
+    return labels;
   }
 
   getBest() {
@@ -121,6 +138,29 @@ class Stats extends React.Component {
     return this.state.ao50;
   }
 
+  getSessionAvg() {
+    var session = []
+    session = session = session.concat(this.props.record);
+    session.sort(function (a, b) { return a - b });
+
+    session.shift();
+    session.pop();
+
+    this.setState({ session_average: ((this.stringToInt(session).reduce((a, b) => a + b, 0)) / (this.props.record.length - 2)).toFixed(2) });
+
+    return this.state.session_average;
+  }
+
+  getSessionMean() {
+    var session = []
+    session = session = session.concat(this.props.record);
+    session.sort(function (a, b) { return a - b });
+
+    this.setState({ session_mean: ((this.stringToInt(session).reduce((a, b) => a + b, 0)) / this.props.record.length).toFixed(2) })
+
+    return this.state.session_mean;
+  }
+
   clearRecord() {
     this.props.clearRecord();
     this.setState({
@@ -133,10 +173,14 @@ class Stats extends React.Component {
     })
   }
 
+  deleteLastSolve() {
+    this.props.record.pop();
+  }
+
   render() {
 
     const graph = {
-      labels: ['1', '2', '3', '4', '5'],
+      labels: this.state.x_axis,
       datasets: [
         {
           label: 'Solve Times',
@@ -145,7 +189,7 @@ class Stats extends React.Component {
           backgroundColor: '#FFFFFF',
           borderColor: '#939393',
           borderWidth: 1,
-          data: this.state.record
+          data: this.props.record
         }
       ]
     }
@@ -153,14 +197,12 @@ class Stats extends React.Component {
     return (
       <React.Fragment>
         <div id="avg-container">
-
-          <p id="avg-text">  </p>
           <p id="avg-text"> ao5: {this.state.ao5} </p>
           <p id="avg-text"> ao12: {this.state.ao12}</p>
           <p id="avg-text"> ao50: {this.state.ao50} </p>
         </div>
         <Row id="dashboard">
-          <Col md={6} id="s_section">
+          <Col md={6} xs={12} id="s_section">
             <p> Statistics </p>
             <Row>
               <Col md={8} id="recorded_times">
@@ -169,18 +211,20 @@ class Stats extends React.Component {
               <Col md={4} id="main_stats">
                 <p> Session Best: {this.state.best} </p>
                 <p> Session Worst: {this.state.worst} </p>
-                <p> Session Average:  </p>
-                <p> Session Mean:  </p>
-                <Button variant="outline-dark" id="reset-button" onClick={this.clearRecord}> Reset </Button>
+                <p> Session Average:  {this.state.session_average}</p>
+                <p> Session Mean: {this.state.session_mean} </p>
+                <Button variant="outline-dark" id="reset-button" onClick={this.clearRecord}> Reset All </Button>
+                <Button variant="outline-dark" id="reset-button" onClick={this.deleteLastSolve}> Delete Last Solve </Button>
               </Col>
             </Row>
           </Col>
-          <Col md={6} id="chart_section">
+          <Col md={6} xs={12} id="chart_section">
             <p> Performance Data </p>
             <Line data={graph}
-              width={"30%"}
-              height={"6%"}
-              options={{ maintainAspectRatio: true,
+              width={30}
+              height={6}
+              options={{
+                maintainAspectRatio: true,
                 scales: {
                   yAxes: [{
                     ticks: {
