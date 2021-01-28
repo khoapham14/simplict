@@ -3,6 +3,7 @@
     margin-left: auto;
     margin-right: auto;
     text-align: center;
+    min-height: 720px;
 }
 
 #timer-container:focus{

@@ -20,6 +20,11 @@
 
 #s_section{
     border-right: 1px solid grey;
+    background-color: whitesmoke;
+}
+
+#chart_section{
+    background-color: whitesmoke;
 }
 
 #recorded_times{
