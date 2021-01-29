@@ -50,7 +50,7 @@
 }
 
 #avg-text{
-    font-size: 2em;
+    font-size: 1.3em;
     line-height: 1em;
     color: #FFFFFF;
 }
@@ -59,8 +59,18 @@
     border-color: #939393;
     color: #939393;
     margin-right: 2px;
+    font-size: 1em;
 }
 
 #reset-button:hover{
     color: #FFFFFF;
+}
+
+
+@media only screen and (max-width: 768){
+ 
+}
+
+@media only screen and (max-width: 480px){
+ 
 }

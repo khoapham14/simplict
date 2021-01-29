@@ -17,6 +17,7 @@ class Stats extends React.Component {
       session_mean: 0,
       full_record: [],
       x_axis: [],
+      width: window.innerWidth,
     };
 
     this.avg_of_5 = this.avg_of_5.bind(this)
@@ -32,7 +33,6 @@ class Stats extends React.Component {
   }
 
   componentDidMount() {
-    window.addEventListener("resize", this.handleWindowSizeChange);
     window.addEventListener("spacebar", this.handleSpace, true);
     setInterval(() => this.setState({
       ao5: this.avg_of_5(),
@@ -43,11 +43,11 @@ class Stats extends React.Component {
       session_average: this.getSessionAvg(),
       session_mean: this.getSessionMean(),
       x_axis: this.generateX(),
+      width: window.innerWidth,
     }), 500)
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.handleWindowSizeChange);
     window.removeEventListener("spacebar", this.handleSpace, true);
   }
 
@@ -96,6 +96,9 @@ class Stats extends React.Component {
         ao5: ((this.stringToInt(this.state.record).reduce((a, b) => a + b, 0)) / 3).toFixed(2),
       });
     }
+    else {
+      this.setState({ ao5: "" });
+    }
 
     return this.state.ao5;
   }
@@ -114,6 +117,9 @@ class Stats extends React.Component {
       this.setState({
         ao12: ((this.stringToInt(this.state.record).reduce((a, b) => a + b, 0)) / 10).toFixed(2),
       });
+    }
+    else {
+      this.setState({ ao12: "" });
     }
 
     return this.state.ao12;
@@ -135,28 +141,43 @@ class Stats extends React.Component {
       });
     }
 
+    else {
+      this.setState({ ao50: "" });
+    }
+
     return this.state.ao50;
   }
 
   getSessionAvg() {
     var session = []
-    session = session = session.concat(this.props.record);
-    session.sort(function (a, b) { return a - b });
+    if (this.props.record.length >= 3) {
+      session = session = session.concat(this.props.record);
+      session.sort(function (a, b) { return a - b });
 
-    session.shift();
-    session.pop();
+      session.shift();
+      session.pop();
 
-    this.setState({ session_average: ((this.stringToInt(session).reduce((a, b) => a + b, 0)) / (this.props.record.length - 2)).toFixed(2) });
+      this.setState({ session_average: ((this.stringToInt(session).reduce((a, b) => a + b, 0)) / (this.props.record.length - 2)).toFixed(2) });
+    }
+    else {
+      this.setState({ session_average: "" })
+    }
+
 
     return this.state.session_average;
   }
 
   getSessionMean() {
     var session = []
-    session = session = session.concat(this.props.record);
-    session.sort(function (a, b) { return a - b });
+    if (this.props.record.length > 0) {
+      session = session = session.concat(this.props.record);
+      session.sort(function (a, b) { return a - b });
 
-    this.setState({ session_mean: ((this.stringToInt(session).reduce((a, b) => a + b, 0)) / this.props.record.length).toFixed(2) })
+      this.setState({ session_mean: ((this.stringToInt(session).reduce((a, b) => a + b, 0)) / this.props.record.length).toFixed(2) })
+    }
+    else {
+      this.setState({ session_mean: "" });
+    }
 
     return this.state.session_mean;
   }
@@ -194,50 +215,151 @@ class Stats extends React.Component {
       ]
     }
 
-    return (
-      <React.Fragment>
-        <div id="avg-container">
-          <p id="avg-text"> ao5: {this.state.ao5} </p>
-          <p id="avg-text"> ao12: {this.state.ao12}</p>
-          <p id="avg-text"> ao50: {this.state.ao50} </p>
-        </div>
-        <Row id="dashboard">
-          <Col md={6} xs={12} id="s_section">
-            <p> Statistics </p>
-            <Row>
-              <Col md={8} id="recorded_times">
-                {this.props.record}
-              </Col>
-              <Col md={4} id="main_stats">
-                <p> Session Best: {this.state.best} </p>
-                <p> Session Worst: {this.state.worst} </p>
-                <p> Session Average:  {this.state.session_average}</p>
-                <p> Session Mean: {this.state.session_mean} </p>
-                <Button variant="outline-dark" id="reset-button" onClick={this.clearRecord}> Reset All </Button>
-                <Button variant="outline-dark" id="reset-button" onClick={this.deleteLastSolve}> Delete Last Solve </Button>
-              </Col>
-            </Row>
-          </Col>
-          <Col md={6} xs={12} id="chart_section">
-            <p> Performance Data </p>
-            <Line data={graph}
-              width={30}
-              height={6}
-              options={{
-                maintainAspectRatio: true,
-                scales: {
-                  yAxes: [{
-                    ticks: {
-                      beginAtZero: true
-                    }
-                  }]
-                }
-              }}
-            />
-          </Col>
-        </Row>
-      </React.Fragment>
-    );
+    const width = this.state.width;
+    const isTablet = width <= 700 && width > 480;
+    const isMobile = width <= 480;
+
+    if (isMobile) {
+      return (
+        <React.Fragment>
+          <div id="avg-container">
+            <p id="avg-text"> ao5: {this.state.ao5} </p>
+            <p id="avg-text"> ao12: {this.state.ao12}</p>
+            <p id="avg-text"> ao50: {this.state.ao50} </p>
+          </div>
+          <Row id="dashboard">
+            <Col md={6} xs={12} id="s_section">
+              <p> Statistics </p>
+              <Row>
+                <Col md={8} id="recorded_times">
+                  {this.props.record}
+                </Col>
+                <Col md={4} id="main_stats">
+                  <p> Session Best: {this.state.best} </p>
+                  <p> Session Worst: {this.state.worst} </p>
+                  <p> Session Average:  {this.state.session_average}</p>
+                  <p> Session Mean: {this.state.session_mean} </p>
+                  <Button variant="outline-dark" id="reset-button" onClick={this.clearRecord}> Reset All </Button>
+                  <Button variant="outline-dark" id="reset-button" onClick={this.deleteLastSolve}> Delete Last Solve </Button>
+                </Col>
+              </Row>
+            </Col>
+            <Col md={6} xs={12} id="chart_section">
+              <p> Performance Data </p>
+              <Line data={graph}
+                width={5}
+                height={1}
+                options={{
+                  maintainAspectRatio: true,
+                  scales: {
+                    yAxes: [{
+                      ticks: {
+                        beginAtZero: true
+                      }
+                    }]
+                  }
+                }}
+              />
+            </Col>
+          </Row>
+        </React.Fragment>
+      );
+    }
+    else if (isTablet) {
+      return (
+        <React.Fragment>
+          <div id="avg-container">
+            <p id="avg-text"> ao5: {this.state.ao5} </p>
+            <p id="avg-text"> ao12: {this.state.ao12}</p>
+            <p id="avg-text"> ao50: {this.state.ao50} </p>
+          </div>
+          <Row id="dashboard">
+            <Col md={6} xs={12} id="s_section">
+              <p> Statistics </p>
+              <Row>
+                <Col md={8} id="recorded_times">
+                  {this.props.record}
+                </Col>
+                <Col md={4} id="main_stats">
+                  <p> Session Best: {this.state.best} </p>
+                  <p> Session Worst: {this.state.worst} </p>
+                  <p> Session Average:  {this.state.session_average}</p>
+                  <p> Session Mean: {this.state.session_mean} </p>
+                  <Button variant="outline-dark" id="reset-button" onClick={this.clearRecord}> Reset All </Button>
+                  <Button variant="outline-dark" id="reset-button" onClick={this.deleteLastSolve}> Delete Last Solve </Button>
+                </Col>
+              </Row>
+            </Col>
+            <Col md={6} xs={12} id="chart_section">
+              <p> Performance Data </p>
+              <Line data={graph}
+                width={4}
+                height={1}
+                options={{
+                  maintainAspectRatio: true,
+                  scales: {
+                    yAxes: [{
+                      ticks: {
+                        beginAtZero: true
+                      }
+                    }]
+                  }
+                }}
+              />
+            </Col>
+          </Row>
+        </React.Fragment>
+      );
+    }
+    else {
+      return (
+        <React.Fragment>
+          <div id="avg-container">
+            <p id="avg-text"> ao5: {this.state.ao5} </p>
+            <p id="avg-text"> ao12: {this.state.ao12}</p>
+            <p id="avg-text"> ao50: {this.state.ao50} </p>
+          </div>
+          <Row id="dashboard">
+            <Col md={6} xs={12} id="s_section">
+              <p> Statistics </p>
+              <Row>
+                <Col md={8} id="recorded_times">
+                  {this.props.record}
+                </Col>
+                <Col md={4} id="main_stats">
+                  <p> Session Best: {this.state.best} </p>
+                  <p> Session Worst: {this.state.worst} </p>
+                  <p> Session Average:  {this.state.session_average}</p>
+                  <p> Session Mean: {this.state.session_mean} </p>
+                  <Button variant="outline-dark" id="reset-button" onClick={this.clearRecord}> Reset All </Button>
+                  <Button variant="outline-dark" id="reset-button" onClick={this.deleteLastSolve}> Delete Last Solve </Button>
+                </Col>
+              </Row>
+            </Col>
+            <Col md={6} xs={12} id="chart_section">
+              <p> Performance Data </p>
+              <Line data={graph}
+                width={5}
+                height={1}
+                options={{
+                  maintainAspectRatio: true,
+                  scales: {
+                    yAxes: [{
+                      ticks: {
+                        beginAtZero: true
+                      }
+                    }]
+                  }
+                }}
+              />
+            </Col>
+          </Row>
+        </React.Fragment>
+      );
+    }
+
+
+
   }
 
 }
