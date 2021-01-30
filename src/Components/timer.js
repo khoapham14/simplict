@@ -1,107 +1,140 @@
 import React from 'react';
-import ms from 'pretty-ms';
 import { Row } from 'react-bootstrap';
 import Stats from './statistics.js';
 import Scrambler from './scrambler.js';
 import "./timer.css";
 
 class Timer extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            time: 0,
-            start: 0,
-            isOn: false,
-            result: 0,
-            record: [],
-            refresh: false,
-        };
+  constructor() {
+    super();
+    this.state = {
+      time: 0,
+      start: 0,
+      isOn: false,
+      result: 0,
+      record: [],
+      refresh: false,
+    };
 
-        this.startTimer = this.startTimer.bind(this)
-        this.stopTimer = this.stopTimer.bind(this)
-        this.resetTimer = this.resetTimer.bind(this)
-        this.handleSpace = this.handleSpace.bind(this)
-        this.clearRecord = this.clearRecord.bind(this)
-        this.refresh = this.refresh.bind(this)
+    this.startTimer = this.startTimer.bind(this)
+    this.stopTimer = this.stopTimer.bind(this)
+    this.resetTimer = this.resetTimer.bind(this)
+    this.handleSpace = this.handleSpace.bind(this)
+    this.clearRecord = this.clearRecord.bind(this)
+    this.refresh = this.refresh.bind(this)
+    this.msToTime = this.msToTime.bind(this)
+  }
+
+  componentDidMount() {
+    document.addEventListener("resize", this.handleWindowSizeChange);
+    document.addEventListener("spacebar", this.handleSpace, true);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("resize", this.handleWindowSizeChange);
+    document.removeEventListener("spacebar", this.handleSpace, true);
+  }
+
+  handleSpace(e) {
+    // Starts timer when spacebar is pressed.
+    if (e.keyCode === 32) {
+      if (this.state.time === 0) {
+        setTimeout(this.startTimer(), 1000);
+        // console.log("starttimer called");  For debugging
+      }
+      else {
+        // Stops timer, wait 0.5s then export and reset.
+        this.stopTimer();
+        this.setState({ refresh: true });
+        setTimeout(this.refresh, 500);
+      }
     }
+  }
 
-    componentDidMount() {
-        document.addEventListener("resize", this.handleWindowSizeChange);
-        document.addEventListener("spacebar", this.handleSpace, true);
+  // Formatting time to hh:mm:ss.ms format
+  msToTime(s) {
+    // Pad to 2 or 3 digits, default is 2
+    var pad = (n, z = 2) => ('00' + n).slice(-z);
+    if (s < 60000) {
+      return pad((s % 6e4) / 1000 | 0) + '.' + pad(s % 1000, 3) + "  ";
     }
-
-    componentWillUnmount() {
-        document.removeEventListener("resize", this.handleWindowSizeChange);
-        document.removeEventListener("spacebar", this.handleSpace, true);
+    else if (s >= 60000 && s < 3600000) {
+      return pad((s % 3.6e6) / 6e4 | 0) + ':' + pad((s % 6e4) / 1000 | 0) + '.' + pad(s % 1000, 3) + "  ";
     }
-
-    handleSpace(e) {
-        if (e.keyCode === 32) {
-            if (this.state.time === 0) {
-                this.startTimer();
-            }
-            else {
-                this.stopTimer();
-                this.setState({ refresh: true });
-                setTimeout(this.refresh, 500);
-            }
-        }
+    else if (s >= 3600000) {
+      return pad(s / 3.6e6 | 0) + ':' + pad((s % 3.6e6) / 6e4 | 0) + ':' + pad((s % 6e4) / 1000 | 0) + '.' + pad(s % 1000, 3) + "  ";
     }
-
-    startTimer() {
-        this.setState({
-            time: this.state.time,
-            start: Date.now() - this.state.time,
-            isOn: true
-        })
-
-
-        this.timer = setInterval(() => this.setState({
-            time: ms(Date.now() - this.state.start)
-        }), 1);
-
+    else {
+      alert("Wake up fool! You're taking too long to solve that cube!");
     }
+  }
 
-    refresh() {
-        this.setState({ refresh: false });
-        this.exportTime();  
-        this.resetTimer();
-    }
+  // Function to start timer.
+  startTimer() {
+    // Starts timing by constantly checking for current time and saving to state.
+    this.setState({
+      time: this.state.time,
+      start: Date.now() - this.state.time,
+      isOn: true
+    })
 
-    stopTimer() {
-        this.setState({
-            isOn: false,
-            refresh: true,
-        })
-        clearInterval(this.timer)
-    }
 
-    resetTimer() {
-        this.setState({
-            time: 0,
-            refresh: false
-        })
-    }
+    this.timer = setInterval(() => this.setState({
+      time: this.msToTime(Date.now() - this.state.start)
+    }), 1);
 
-    exportTime() {
-        this.setState({ record: this.state.record.concat(this.state.time.replace('m', '').replace('s', '  ')) });
-    }
+  }
 
-    clearRecord() {
-        this.setState({ record: [] });
-    }
+  // Refresh and export time.
+  refresh() {
+    this.setState({ refresh: false });
+    this.exportTime();
+    this.resetTimer();
+  }
 
-    render() {
-        return (
-            <div onKeyUp={this.handleSpace} tabIndex="0" id="timer-container">
-                <Row>
-                    <Scrambler refresh={this.state.refresh} />
-                </Row>
-                <p id="timer-text"> {this.state.time} </p>
-                <Stats record={this.state.record} clearRecord={this.clearRecord} />
-            </div>
-        );
-    }
+  // Stopping timer.
+  stopTimer() {
+    this.setState({
+      isOn: false,
+      refresh: true,
+    })
+    clearInterval(this.timer)
+  }
+
+  // Resetting timer to 0.
+  resetTimer() {
+    this.setState({
+      time: 0,
+      refresh: false
+    })
+  }
+
+  // Adding time to this.state.record for exporting to Statistics component
+  exportTime() {
+    this.setState({ record: this.state.record.concat(this.state.time)});
+  }
+
+  // Clearing all times
+  clearRecord() {
+    this.setState({ record: [] });
+  }
+
+  render() {
+    return (
+      <div onKeyUp={this.handleSpace} tabIndex="0" id="timer-container">
+        
+        {/* Passing refresh as prop to Scrambler for scramble sequence to refresh when timer stops. */}
+        <Row>
+          <Scrambler refresh={this.state.refresh} /> 
+        </Row>
+
+        <p id="timer-text"> {this.state.time} </p>
+
+        {/* Passing record & clear record to statistics for processing */}
+        <Stats record={this.state.record} clearRecord={this.clearRecord} />
+      </div>
+    );
+  }
 
 }
 

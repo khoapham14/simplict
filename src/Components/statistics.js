@@ -30,10 +30,12 @@ class Stats extends React.Component {
     this.getSessionAvg = this.getSessionAvg.bind(this)
     this.deleteLastSolve = this.deleteLastSolve.bind(this)
     this.generateX = this.generateX.bind(this)
+    this.handleWindowSizeChange = this.handleWindowSizeChange.bind(this)
   }
 
   componentDidMount() {
     window.addEventListener("spacebar", this.handleSpace, true);
+    window.addEventListener("resize", this.handleWindowSizeChange);
     setInterval(() => this.setState({
       ao5: this.avg_of_5(),
       ao12: this.avg_of_12(),
@@ -45,10 +47,16 @@ class Stats extends React.Component {
       x_axis: this.generateX(),
       width: window.innerWidth,
     }), 500)
+    
   }
 
   componentWillUnmount() {
     window.removeEventListener("spacebar", this.handleSpace, true);
+    window.removeEventListener("resize", this.handleWindowSizeChange);
+  }
+
+  handleWindowSizeChange(){
+    this.setState({ width: window.innerWidth});
   }
 
   stringToInt(array) {

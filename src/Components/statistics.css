@@ -120,3 +120,17 @@
         width: 100vw;
     }
 }
+
+@media only screen and (orientation: portrait){
+    #dashboard{
+        display: flex;
+        position:absolute;
+        bottom: 0;
+        height: 25vh;
+        width: 100vw;
+        color: #939393;
+        font-weight: 500;
+        font-size: 1.2em;
+        text-align: center;
+    }
+}
