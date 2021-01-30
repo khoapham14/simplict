@@ -5,21 +5,7 @@
     width: 100vw;
 }
 
-#dashboard{
-    position: absolute;
-    bottom: 0;
-    display: flex;
-    background-color: whitesmoke;
-    height: 25vh;
-    width: 100vw;
-    color: #939393;
-    font-weight: 500;
-    font-size: 1.2em;
-    text-align: center;
-}
-
 #s_section{
-    border-right: 1px solid grey;
     background-color: whitesmoke;
 }
 
@@ -31,6 +17,7 @@
     font-size: 0.7em;
     text-align: left;
     background-color: white;
+    overflow: auto;
 }
 
 #main_stats{
@@ -66,11 +53,70 @@
     color: #FFFFFF;
 }
 
-
-@media only screen and (max-width: 768){
- 
+#dashboard{
+    color: #939393;
+    font-weight: 500;
+    font-size: 1.2em;
 }
 
+
+@media only screen and (min-width: 1400px){
+    #dashboard{
+        position:absolute;
+        bottom: 0;
+        display: flex;
+        height: 25vh;
+        width: 100vw;
+        color: #939393;
+        font-weight: 500;
+        font-size: 1.2em;
+        text-align: center;
+    }
+
+    #s_section{
+        border-right: 1px solid grey;
+    }
+}
+
+@media only screen and (max-width: 1400px) and (min-width: 768px){
+    #dashboard{
+        display: flex;
+        position:absolute;
+        bottom: 0;
+        height: 25vh;
+        width: 100vw;
+        color: #939393;
+        font-weight: 500;
+        font-size: 1.2em;
+        text-align: center;
+    }
+
+    #s_section{
+        border-right: 1px solid grey;
+    }
+}
+
+@media only screen and (max-width: 768px) and (min-width:480px){
+    #s_section{
+        border-bottom: 1px solid grey;
+        padding-bottom: 2%;
+        background-color: whitesmoke;
+    }
+}
+
+
 @media only screen and (max-width: 480px){
- 
+    #s_section{
+        border-bottom: 1px solid grey;
+        padding-bottom: 2%;
+        background-color: whitesmoke;
+    }
+
+    #dashboard{
+        display: flex;
+        position:absolute;
+        bottom: 0;
+        height: 25vh;
+        width: 100vw;
+    }
 }
