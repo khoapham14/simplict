@@ -61,15 +61,29 @@ class Scrambler extends React.Component {
     // Removes consecutive duplicates from an array to prevent redundant moves
     removeDuplicates(array, len = 0, canDelete = false) {
         if (len < array.length) {
-            if (canDelete) {
+            if (canDelete) {   // If element is the same as the next one, deletes 1 and go back 1 step. 
                 array.splice(len, 1);
                 len--;
             }
-            return this.removeDuplicates(array, len + 1, array[len] === array[len + 1])
+
+            var consecutive = (array[len] === array[len+1])
+            var one_apart = (array[len] === array[len+2])
+            var isDeletable;
+
+            if(consecutive){
+                isDeletable = consecutive;
+            } else if(one_apart){
+                isDeletable = one_apart;
+            } else{
+                isDeletable = false;
+            }
+            
+            return this.removeDuplicates(array, len + 1, isDeletable)
         }
 
-        return;
+      
     }
+    
 
     // Generates a random number from a range indicated by max.
     getRandomInt(max) {
