@@ -17,6 +17,7 @@
     "react-scripts": "4.0.1",
     "react-test-renderer": "^17.0.1",
     "react-touch": "^0.4.4",
+    "react-touch-events": "^3.0.0",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
