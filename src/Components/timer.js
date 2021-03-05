@@ -2,6 +2,7 @@ import React from 'react';
 import { Row } from 'react-bootstrap';
 import Stats from './statistics.js';
 import Scrambler from './scrambler.js';
+import { Holdable } from 'react-touch';
 import "./timer.css";
 
 class Timer extends React.Component {
@@ -23,6 +24,7 @@ class Timer extends React.Component {
     this.clearRecord = this.clearRecord.bind(this)
     this.refresh = this.refresh.bind(this)
     this.msToTime = this.msToTime.bind(this)
+    this.handleHold = this.handleHold.bind(this)
   }
 
   componentDidMount() {
@@ -50,6 +52,19 @@ class Timer extends React.Component {
       }
     }
   }
+
+  handleHold(){
+    if(this.state.time === 0){
+      setTimeout(this.startTimer(), 1000);
+    }
+    else{
+      this.stopTimer();
+      this.setState({ refresh: true });
+      setTimeout(this.refresh, 500);
+    }
+  }
+
+  
 
   // Formatting time to hh:mm:ss.ms format
   msToTime(s) {
@@ -121,6 +136,7 @@ class Timer extends React.Component {
 
   render() {
     return (
+    <Holdable onHoldComplete={this.handleHold}>
       <div onKeyUp={this.handleSpace} tabIndex="0" id="timer-container">
         
         {/* Passing refresh as prop to Scrambler for scramble sequence to refresh when timer stops. */}
@@ -133,6 +149,7 @@ class Timer extends React.Component {
         {/* Passing record & clear record to statistics for processing */}
         <Stats record={this.state.record} clearRecord={this.clearRecord} />
       </div>
+    </Holdable>
     );
   }
 

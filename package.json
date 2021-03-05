@@ -16,6 +16,7 @@
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.1",
     "react-test-renderer": "^17.0.1",
+    "react-touch": "^0.4.4",
     "web-vitals": "^0.2.4"
   },
   "scripts": {

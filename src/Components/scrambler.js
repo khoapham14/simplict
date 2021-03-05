@@ -70,10 +70,8 @@ class Scrambler extends React.Component {
             var one_apart = (array[len] === array[len+2])
             var isDeletable;
 
-            if(consecutive){
-                isDeletable = consecutive;
-            } else if(one_apart){
-                isDeletable = one_apart;
+            if(consecutive || one_apart){
+                isDeletable = true;
             } else{
                 isDeletable = false;
             }
