@@ -136,20 +136,21 @@ class Timer extends React.Component {
 
   render() {
     return (
-    <ReactTouchEvents onTap={this.handleHold}>
+    
       <div onKeyUp={this.handleSpace} tabIndex="0" id="timer-container">
         
         {/* Passing refresh as prop to Scrambler for scramble sequence to refresh when timer stops. */}
         <Row>
           <Scrambler refresh={this.state.refresh} /> 
         </Row>
-
+        <ReactTouchEvents onTap={this.handleHold}>
         <p id="timer-text"> {this.state.time} </p>
+        </ReactTouchEvents>
 
         {/* Passing record & clear record to statistics for processing */}
         <Stats record={this.state.record} clearRecord={this.clearRecord} />
       </div>
-    </ReactTouchEvents>
+   
     );
   }
 
