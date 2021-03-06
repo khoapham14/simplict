@@ -63,11 +63,50 @@ class Scrambler extends React.Component {
         if (len < array.length) {
             if (canDelete) {   // If element is the same as the next one, deletes 1 and go back 1 step. 
                 array.splice(len, 1);
-                len--;
+                len = len - 2;
             }
 
             var consecutive = (array[len] === array[len+1])
-            var one_apart = (array[len] === array[len+2])
+            var one_apart;
+
+            switch (array[len]){
+                case "F":
+                    if(array[len+1] === "B" && array[len] === array[len+2]){
+                        one_apart = true;
+                    }
+                    break;
+                case "B":
+                    if(array[len+1] === "F" && array[len] === array[len+2]){
+                        one_apart = true;
+                    }
+                    break;
+
+                case "L":
+                    if(array[len+1] === "R" && array[len] === array[len+2]){
+                        one_apart = true;
+                    }
+                    break;
+                case "R":
+                    if(array[len+1] === "L" && array[len] === array[len+2]){
+                        one_apart = true;
+                    }
+                    break;
+                case "U":
+                    if(array[len+1] === "D" && array[len] === array[len+2]){
+                        one_apart = true;
+                    }
+                    break;
+
+                case "D":
+                    if(array[len+1] === "U" && array[len] === array[len+2]){
+                        one_apart = true;
+                    }
+                    break;
+                default:
+                    one_apart = false;
+                    break;
+            }
+
             var isDeletable;
 
             if(consecutive || one_apart){
@@ -78,8 +117,7 @@ class Scrambler extends React.Component {
             
             return this.removeDuplicates(array, len + 1, isDeletable)
         }
-
-      
+ 
     }
     
 
@@ -99,7 +137,7 @@ class Scrambler extends React.Component {
         var final_scr = array_1.concat(array_2, array_3, array_4);
 
         this.removeDuplicates(final_scr);
-
+ 
         var i;
 
         // Using RNG to randomly choose how to turn for each move.

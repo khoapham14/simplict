@@ -41,7 +41,7 @@ class Timer extends React.Component {
     // Starts timer when spacebar is pressed.
     if (e.keyCode === 32) {
       if (this.state.time === 0) {
-        setTimeout(this.startTimer(), 1000);
+        this.startTimer()
         // console.log("starttimer called");  For debugging
       }
       else {
@@ -71,13 +71,13 @@ class Timer extends React.Component {
     // Pad to 2 or 3 digits, default is 2
     var pad = (n, z = 2) => ('00' + n).slice(-z);
     if (s < 60000) {
-      return pad((s % 6e4) / 1000 | 0) + '.' + pad(s % 1000, 3) + "  ";
+      return pad((s % 6e4) / 1000 | 0) + '.' + pad(s % 1000, 2) + "  ";
     }
     else if (s >= 60000 && s < 3600000) {
-      return pad((s % 3.6e6) / 6e4 | 0) + ':' + pad((s % 6e4) / 1000 | 0) + '.' + pad(s % 1000, 3) + "  ";
+      return pad((s % 3.6e6) / 6e4 | 0) + ':' + pad((s % 6e4) / 1000 | 0) + '.' + pad(s % 1000, 2) + "  ";
     }
     else if (s >= 3600000) {
-      return pad(s / 3.6e6 | 0) + ':' + pad((s % 3.6e6) / 6e4 | 0) + ':' + pad((s % 6e4) / 1000 | 0) + '.' + pad(s % 1000, 3) + "  ";
+      return pad(s / 3.6e6 | 0) + ':' + pad((s % 3.6e6) / 6e4 | 0) + ':' + pad((s % 6e4) / 1000 | 0) + '.' + pad(s % 1000, 2) + "  ";
     }
     else {
       alert("Wake up fool! You're taking too long to solve that cube!");
@@ -99,6 +99,8 @@ class Timer extends React.Component {
     }), 1);
 
   }
+
+  // Function to check time passed since finger tap / space pressed.
 
   // Refresh and export time.
   refresh() {
