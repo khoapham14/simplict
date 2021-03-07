@@ -1,6 +1,8 @@
 import React from 'react';
 import refresh from '../Assets/Refresh_icon.png';
 import "./scrambler.css";
+import { Container, Dropdown } from 'react-bootstrap';
+
 
 class Scrambler extends React.Component {
   constructor() {
@@ -19,6 +21,10 @@ class Scrambler extends React.Component {
     this.refreshScramble = this.refreshScramble.bind(this)
     this.refreshOnSolve = this.refreshOnSolve.bind(this)
     this.remove4x4Error = this.remove4x4Error.bind(this)
+    this.get3Scramble = this.get3Scramble.bind(this)
+    this.get4Scramble = this.get4Scramble.bind(this)
+    this.get5Scramble = this.get5Scramble.bind(this)
+    this.getMScramble = this.getMScramble.bind(this)
   }
 
   componentDidMount() {
@@ -41,6 +47,26 @@ class Scrambler extends React.Component {
     else {
 
     }
+  }
+
+  get3Scramble() {
+    this.setState({ puzzle_type: "3x3" })
+    this.refreshScramble();
+  }
+
+  get4Scramble() {
+    this.setState({ puzzle_type: "4x4" })
+    this.refreshScramble();
+  }
+
+  get5Scramble() {
+    this.setState({ puzzle_type: "5x5" })
+    this.refreshScramble();
+  }
+
+  getMScramble() {
+    this.setState({ puzzle_type: "Megaminx" })
+    this.refreshScramble();
   }
 
   // Creates an array of sides and shuffles the element randomly
@@ -174,7 +200,6 @@ class Scrambler extends React.Component {
 
   }
 
-
   // Generates a random number from a range indicated by max.
   getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
@@ -182,7 +207,6 @@ class Scrambler extends React.Component {
 
   // Generate a scramble
   scramble() {
-
     switch (this.state.puzzle_type) {
       case "3x3":
         var array_1 = this.shuffle();
@@ -302,6 +326,7 @@ class Scrambler extends React.Component {
         this.setState({ scramble: final_scr });
         break;
 
+
       case "4x4":
         array_1 = this.shuffle();
         array_2 = this.shuffle();
@@ -314,7 +339,7 @@ class Scrambler extends React.Component {
 
         final_scr = array_1.concat(array_2, array_3, array_4, array_5, array_6, array_7, array_8);
 
-       
+
         this.removeDuplicates(final_scr);
         this.remove4x4Error(final_scr);
 
@@ -479,6 +504,7 @@ class Scrambler extends React.Component {
         final_scr = final_scr.join(" ");
         this.setState({ scramble: final_scr });
         break;
+
       case "5x5":
         array_1 = this.shuffle();
         array_2 = this.shuffle();
@@ -493,9 +519,8 @@ class Scrambler extends React.Component {
 
         final_scr = array_1.concat(array_2, array_3, array_4, array_5, array_6, array_7, array_8, array_9, array_10);
 
-       
-        this.removeDuplicates(final_scr);
 
+        this.removeDuplicates(final_scr);
 
 
         //Using RNG to randomly choose how to turn for each move.
@@ -658,12 +683,70 @@ class Scrambler extends React.Component {
         final_scr = final_scr.join(" ");
         this.setState({ scramble: final_scr });
         break;
+
       case "Megaminx":
+        var m_array_1 = ["R", "D", "R", "D", "R", "D", "R", "D", "R", "D", "U"]
+        var m_array_2 = m_array_1;
+        var m_array_3 = m_array_1;
+        var m_array_4 = m_array_1;
+        var m_array_5 = m_array_1;
+
+        final_scr = m_array_1.concat(m_array_2, m_array_3, m_array_4, m_array_5);
+
+
+        //Using RNG to randomly choose how to turn for each move.
+        for (i = 0; i < final_scr.length; i++) {
+          switch (final_scr[i]) {
+            case "R":
+              switch (this.getRandomInt(2)) {
+                default:
+                  break;
+                case 0:
+                  final_scr[i] = "R++"
+                  break;
+                case 1:
+                  final_scr[i] = "R--"
+                  break;
+              }
+              break;
+            case "D":
+              switch (this.getRandomInt(2)) {
+                default:
+                  break;
+                case 0:
+                  final_scr[i] = "D++"
+                  break;
+                case 1:
+                  final_scr[i] = "D--"
+                  break;
+              }
+              break;
+            case "U":
+              switch (this.getRandomInt(2)) {
+                default:
+                  break;
+                case 0:
+                  final_scr[i] = "U"
+                  break;
+                case 1:
+                  final_scr[i] = "U'"
+                  break;
+              }
+              break;
+            default:
+              break;
+          }
+        }
+
+        final_scr = final_scr.join(" ");
+        this.setState({ scramble: final_scr });
         break;
+
       default:
         return this.state.scramble;
     }
   }
+
 
   refreshScramble() {
     setTimeout(this.scramble, 500);
@@ -671,11 +754,24 @@ class Scrambler extends React.Component {
 
   render() {
     return (
-      <div id="scramble">
-        {this.state.scramble}
-        {this.refreshOnSolve()}
-        <img src={refresh} onClick={this.refreshScramble} id="refresh_icon" alt="refresh_button" />
-      </div>
+      <Container id="scramble-container">
+        <p id="scramble">
+          {this.state.scramble}
+          {this.refreshOnSolve()}
+        </p>
+        <Dropdown>
+          <Dropdown.Toggle variant="outline-light" id="dropdown-text">
+            Scramble Type
+            </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item id="dropdown-text" onClick={this.get3Scramble}> 3x3 </Dropdown.Item>
+            <Dropdown.Item id="dropdown-text" onClick={this.get4Scramble}> 4x4 </Dropdown.Item>
+            <Dropdown.Item id="dropdown-text" onClick={this.get5Scramble}> 5x5 </Dropdown.Item>
+            <Dropdown.Item id="dropdown-text" onClick={this.getMScramble}> Megaminx </Dropdown.Item>
+          </Dropdown.Menu>
+          <img src={refresh} onClick={this.refreshScramble} id="refresh_icon" alt="refresh_button" />
+        </Dropdown>
+      </Container>
     );
   }
 }
