@@ -26,6 +26,7 @@ class Timer extends React.Component {
     this.refresh = this.refresh.bind(this)
     this.msToTime = this.msToTime.bind(this)
     this.handleHold = this.handleHold.bind(this)
+    this.handleWindowSizeChange = this.handleWindowSizeChange.bind(this)
 
   }
 
