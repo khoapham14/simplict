@@ -15,6 +15,7 @@ class Timer extends React.Component {
       result: 0,
       record: [],
       refresh: false,
+      width: "",
     };
 
     this.startTimer = this.startTimer.bind(this)
@@ -25,6 +26,7 @@ class Timer extends React.Component {
     this.refresh = this.refresh.bind(this)
     this.msToTime = this.msToTime.bind(this)
     this.handleHold = this.handleHold.bind(this)
+
   }
 
   componentDidMount() {
@@ -35,6 +37,10 @@ class Timer extends React.Component {
   componentWillUnmount() {
     document.removeEventListener("resize", this.handleWindowSizeChange);
     document.removeEventListener("spacebar", this.handleSpace, true);
+  }
+
+  handleWindowSizeChange() {
+    this.setState({ width: window.innerWidth });
   }
 
   handleSpace(e) {
@@ -53,18 +59,18 @@ class Timer extends React.Component {
     }
   }
 
-  handleHold(e){
-    if(this.state.time === 0){
+  handleHold(e) {
+    if (this.state.time === 0) {
       setTimeout(this.startTimer(), 1000);
     }
-    else{
+    else {
       this.stopTimer();
       this.setState({ refresh: true });
       setTimeout(this.refresh, 500);
     }
   }
 
-  
+
 
   // Formatting time to hh:mm:ss.ms format
   msToTime(s) {
@@ -128,7 +134,7 @@ class Timer extends React.Component {
 
   // Adding time to this.state.record for exporting to Statistics component
   exportTime() {
-    this.setState({ record: this.state.record.concat(this.state.time)});
+    this.setState({ record: this.state.record.concat(this.state.time) });
   }
 
   // Clearing all times
@@ -137,23 +143,42 @@ class Timer extends React.Component {
   }
 
   render() {
-    return (
-    
-      <div onKeyUp={this.handleSpace} tabIndex="0" id="timer-container">
-        
-        {/* Passing refresh as prop to Scrambler for scramble sequence to refresh when timer stops. */}
-        <Row>
-          <Scrambler refresh={this.state.refresh} /> 
-        </Row>
-        <ReactTouchEvents onTap={this.handleHold}>
-        <p id="timer-text"> {this.state.time} </p>
-        </ReactTouchEvents>
+    const width = this.state.width;
+    const isTouchDevice = width <= 768;
 
-        {/* Passing record & clear record to statistics for processing */}
-        <Stats record={this.state.record} clearRecord={this.clearRecord} />
-      </div>
-   
-    );
+    if (isTouchDevice) {
+      return (
+        <div onKeyUp={this.handleSpace} tabIndex="0" id="timer-container">
+
+          {/* Passing refresh as prop to Scrambler for scramble sequence to refresh when timer stops. */}
+          <Row>
+            <Scrambler refresh={this.state.refresh} />
+          </Row>
+          <ReactTouchEvents onTap={this.handleHold}>
+            <p id="timer-text"> {this.state.time} </p>
+          </ReactTouchEvents>
+
+          {/* Passing record & clear record to statistics for processing */}
+          <Stats record={this.state.record} clearRecord={this.clearRecord} />
+        </div>
+      );
+    } else {
+      return (
+        <div onKeyUp={this.handleSpace} tabIndex="0" id="timer-container">
+          {/* Passing refresh as prop to Scrambler for scramble sequence to refresh when timer stops. */}
+          <Row>
+            <Scrambler refresh={this.state.refresh} />
+          </Row>
+          <p id="timer-text"> {this.state.time} </p>
+
+          {/* Passing record & clear record to statistics for processing */}
+          <Stats record={this.state.record} clearRecord={this.clearRecord} />
+        </div>
+
+
+      );
+    }
+
   }
 
 }
