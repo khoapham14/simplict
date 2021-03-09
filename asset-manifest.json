@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/simplict/static/css/main.fe2a3242.chunk.css",
-    "main.js": "/simplict/static/js/main.f5f32a57.chunk.js",
-    "main.js.map": "/simplict/static/js/main.f5f32a57.chunk.js.map",
+    "main.css": "/simplict/static/css/main.0adbd49d.chunk.css",
+    "main.js": "/simplict/static/js/main.6082fdb7.chunk.js",
+    "main.js.map": "/simplict/static/js/main.6082fdb7.chunk.js.map",
     "runtime-main.js": "/simplict/static/js/runtime-main.1c8f42cb.js",
     "runtime-main.js.map": "/simplict/static/js/runtime-main.1c8f42cb.js.map",
     "static/css/2.ae9f1eb3.chunk.css": "/simplict/static/css/2.ae9f1eb3.chunk.css",
@@ -12,7 +12,7 @@
     "static/js/3.aae0a686.chunk.js.map": "/simplict/static/js/3.aae0a686.chunk.js.map",
     "index.html": "/simplict/index.html",
     "static/css/2.ae9f1eb3.chunk.css.map": "/simplict/static/css/2.ae9f1eb3.chunk.css.map",
-    "static/css/main.fe2a3242.chunk.css.map": "/simplict/static/css/main.fe2a3242.chunk.css.map",
+    "static/css/main.0adbd49d.chunk.css.map": "/simplict/static/css/main.0adbd49d.chunk.css.map",
     "static/js/2.86bab50b.chunk.js.LICENSE.txt": "/simplict/static/js/2.86bab50b.chunk.js.LICENSE.txt",
     "static/media/Refresh_icon.a86495a5.png": "/simplict/static/media/Refresh_icon.a86495a5.png",
     "static/media/App.css": "/simplict/static/media/Sublime.4860c930.jpg"
@@ -21,7 +21,7 @@
     "static/js/runtime-main.1c8f42cb.js",
     "static/css/2.ae9f1eb3.chunk.css",
     "static/js/2.86bab50b.chunk.js",
-    "static/css/main.fe2a3242.chunk.css",
-    "static/js/main.f5f32a57.chunk.js"
+    "static/css/main.0adbd49d.chunk.css",
+    "static/js/main.6082fdb7.chunk.js"
   ]
 }
