@@ -15,7 +15,7 @@ class Timer extends React.Component {
       result: 0,
       record: [],
       refresh: false,
-      width: "",
+      width: 0,
     };
 
     this.startTimer = this.startTimer.bind(this)
@@ -33,6 +33,9 @@ class Timer extends React.Component {
   componentDidMount() {
     document.addEventListener("resize", this.handleWindowSizeChange);
     document.addEventListener("spacebar", this.handleSpace, true);
+    setInterval(() => this.setState({
+      width: window.innerWidth,
+    }), 100)
   }
 
   componentWillUnmount() {

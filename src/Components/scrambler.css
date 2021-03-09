@@ -1,60 +1,87 @@
-#scramble-container{
-    display:block;
-    margin-left: auto;
-    margin-right: auto;
+#scramble-container {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1vh;
+}
+
+#dropdown-text {
+  font-size: 0.8em;
+}
+
+#scramble {
+  font-family: "Exo", sans-serif;
+  color: #ffffff;
+  font-size: 1.2em;
+  text-align: center;
+  padding-left: 1%;
+  padding-right: 1%;
+  border-color: #ffffff;
+  border-style: solid;
+  cursor: pointer;
+  margin-bottom: 2vh;
+}
+
+#scramble-selector {
+  display: block;
+  position: absolute;
+  right: 0;
+  
 }
 
 #dropdown-text{
-    font-size: 0.8em;
+    font-weight: bold;
+    border-width: 2px;
+    border-radius: 0;
 }
 
-#scramble{
-    font-family: 'Exo', sans-serif;
-    color: #FFFFFF;
-    font-size: 1.2em;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 1vh;
-    padding-left: 1%;
-    padding-right: 1%;
-    width: fit-content;
-    border-color:#FFFFFF;
-    border-style: solid;
-    cursor: pointer;
-    margin-bottom: 2vh;
+#refresh-container {
+  text-align: left;
 }
 
-#refresh_icon{
-    color: #FFFFFF;
-    height: 1em;
-    margin-left: 10px;
-    width: auto;
-    font-size: 1.2em;
+#refresh_icon {
+  color: #ffffff;
+  width: auto;
+  margin-top: 2%;
+  height: 1.5em;
+  left: 0;
+  position: absolute;
 }
 
-#refresh_icon:active{
-    animation-name: spin;
-    animation-duration: 200ms;
-    animation-timing-function: linear;
+#refresh_icon:active {
+  animation-name: spin;
+  animation-duration: 200ms;
+  animation-timing-function: linear;
 }
 
 @keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform:rotate(180deg);
-    }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(180deg);
+  }
 }
 
-@media only screen and (max-width: 768px){
-
+@media only screen and (max-width: 768px) {
+  #dropdown-text {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
 }
 
-@media only screen and (max-width: 480px){
+@media only screen and (max-width: 480px) {
+  #dropdown-text {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
 
+  #refresh_icon {
+    color: #ffffff;
+    width: auto;
+    left: 0;
+    position: absolute;
+    margin-top: 1em;
+    height: 2em;
+  }
 }
-
-
-

@@ -10,7 +10,6 @@ class Stats extends React.Component {
       record: [],
       ao5: 0,
       ao12: 0,
-      ao50: 0,
       best: 0,
       worst: 0,
       session_average: 0,
@@ -22,7 +21,6 @@ class Stats extends React.Component {
 
     this.avg_of_5 = this.avg_of_5.bind(this)
     this.avg_of_12 = this.avg_of_12.bind(this)
-    this.avg_of_50 = this.avg_of_50.bind(this)
     this.stringToInt = this.stringToInt.bind(this)
     this.clearRecord = this.clearRecord.bind(this)
     this.getBest = this.getBest.bind(this)
@@ -39,7 +37,6 @@ class Stats extends React.Component {
     setInterval(() => this.setState({
       ao5: this.avg_of_5(),
       ao12: this.avg_of_12(),
-      ao50: this.avg_of_50(),
       best: this.getBest(),
       worst: this.getWorst(),
       session_average: this.getSessionAvg(),
@@ -133,28 +130,7 @@ class Stats extends React.Component {
     return this.state.ao12;
   }
 
-  avg_of_50() {
-    if (this.props.record.length >= 50) {
-      var i = this.props.record.length - 1;
-      var solves = []
-      for (var x = i; (i - x) < 50; x--) {
-        solves = solves.concat(this.props.record[x])
-      }
-      this.setState({ record: solves })
-      this.state.record.sort(function (a, b) { return a - b });
-      this.state.record.shift();
-      this.state.record.pop();
-      this.setState({
-        ao50: ((this.stringToInt(this.state.record).reduce((a, b) => a + b, 0)) / 48).toFixed(2),
-      });
-    }
-
-    else {
-      this.setState({ ao50: "" });
-    }
-
-    return this.state.ao50;
-  }
+ 
 
   getSessionAvg() {
     var session = []
@@ -234,7 +210,6 @@ class Stats extends React.Component {
           <div id="avg-container">
             <p id="avg-text"> ao5: {this.state.ao5} </p>
             <p id="avg-text"> ao12: {this.state.ao12}</p>
-            <p id="avg-text"> ao50: {this.state.ao50} </p>
           </div>
           <Row id="dashboard">
             <Col md={6} xs={12} id="s_section">
@@ -280,7 +255,6 @@ class Stats extends React.Component {
           <div id="avg-container">
             <p id="avg-text"> ao5: {this.state.ao5} </p>
             <p id="avg-text"> ao12: {this.state.ao12}</p>
-            <p id="avg-text"> ao50: {this.state.ao50} </p>
           </div>
           <Row id="dashboard">
             <Col md={6} xs={12} id="s_section">
@@ -326,7 +300,6 @@ class Stats extends React.Component {
           <div id="avg-container">
             <p id="avg-text"> ao5: {this.state.ao5} </p>
             <p id="avg-text"> ao12: {this.state.ao12}</p>
-            <p id="avg-text"> ao50: {this.state.ao50} </p>
           </div>
           <Row id="dashboard">
             <Col md={6} xs={12} id="s_section">
@@ -372,7 +345,6 @@ class Stats extends React.Component {
           <div id="avg-container">
             <p id="avg-text"> ao5: {this.state.ao5} </p>
             <p id="avg-text"> ao12: {this.state.ao12}</p>
-            <p id="avg-text"> ao50: {this.state.ao50} </p>
           </div>
           <Row id="dashboard">
             <Col md={6} xs={12} id="s_section">

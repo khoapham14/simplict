@@ -1,7 +1,7 @@
 import React from 'react';
 import refresh from '../Assets/Refresh_icon.png';
 import "./scrambler.css";
-import { Container, Dropdown } from 'react-bootstrap';
+import { Container, Dropdown, Row, Col } from 'react-bootstrap';
 
 
 class Scrambler extends React.Component {
@@ -65,7 +65,7 @@ class Scrambler extends React.Component {
   }
 
   getMScramble() {
-    this.setState({ puzzle_type: "Megaminx" })
+    this.setState({ puzzle_type: "Mega" })
     this.refreshScramble();
   }
 
@@ -684,7 +684,7 @@ class Scrambler extends React.Component {
         this.setState({ scramble: final_scr });
         break;
 
-      case "Megaminx":
+      case "Mega":
         var m_array_1 = ["R", "D", "R", "D", "R", "D", "R", "D", "R", "D", "U"]
         var m_array_2 = m_array_1;
         var m_array_3 = m_array_1;
@@ -755,22 +755,32 @@ class Scrambler extends React.Component {
   render() {
     return (
       <Container id="scramble-container">
-        <p id="scramble">
-          {this.state.scramble}
-          {this.refreshOnSolve()}
-        </p>
-        <Dropdown>
-          <Dropdown.Toggle variant="outline-light" id="dropdown-text">
-            {this.state.puzzle_type}
-            </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item id="dropdown-text" onClick={this.get3Scramble}> 3x3 </Dropdown.Item>
-            <Dropdown.Item id="dropdown-text" onClick={this.get4Scramble}> 4x4 </Dropdown.Item>
-            <Dropdown.Item id="dropdown-text" onClick={this.get5Scramble}> 5x5 </Dropdown.Item>
-            <Dropdown.Item id="dropdown-text" onClick={this.getMScramble}> Megaminx </Dropdown.Item>
-          </Dropdown.Menu>
-          <img src={refresh} onClick={this.refreshScramble} id="refresh_icon" alt="refresh_button" />
-        </Dropdown>
+        <Row>
+          <Col lg="3" md="3" sm="2" xs="2">
+            <Dropdown id="scramble-selector">
+              <Dropdown.Toggle variant="outline-light" id="dropdown-text">
+                {this.state.puzzle_type}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item id="dropdown-text" onClick={this.get3Scramble}> 3x3 </Dropdown.Item>
+                <Dropdown.Item id="dropdown-text" onClick={this.get4Scramble}> 4x4 </Dropdown.Item>
+                <Dropdown.Item id="dropdown-text" onClick={this.get5Scramble}> 5x5 </Dropdown.Item>
+                <Dropdown.Item id="dropdown-text" onClick={this.getMScramble}> Megaminx </Dropdown.Item>
+              </Dropdown.Menu>
+
+            </Dropdown>
+          </Col>
+          <Col lg="6" md="6" sm="8" xs="8">
+            <p id="scramble">
+              {this.state.scramble}
+              {this.refreshOnSolve()}
+            </p>
+          </Col>
+          <Col lg="3" md="3" sm="2" xs="2" id="refresh-container">
+            <img src={refresh} onClick={this.refreshScramble} id="refresh_icon" alt="refresh_button" />
+          </Col>
+
+        </Row>
       </Container>
     );
   }
