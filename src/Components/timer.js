@@ -31,15 +31,12 @@ class Timer extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener("resize", this.handleWindowSizeChange);
+    document.addEventListener("resize", this.handleWindowSizeChange,true);
     document.addEventListener("spacebar", this.handleSpace, true);
-    setInterval(() => this.setState({
-      width: window.innerWidth,
-    }), 100)
   }
 
   componentWillUnmount() {
-    document.removeEventListener("resize", this.handleWindowSizeChange);
+    document.removeEventListener("resize", this.handleWindowSizeChange,true);
     document.removeEventListener("spacebar", this.handleSpace, true);
   }
 

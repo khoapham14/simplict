@@ -42,7 +42,6 @@ class Scrambler extends React.Component {
   refreshOnSolve() {
     if (this.props.refresh === true) {
       this.refreshScramble();
-      console.log("Refresh");
     }
     else {
 
