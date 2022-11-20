@@ -28,7 +28,7 @@ class Timer extends React.Component {
     this.msToTime = this.msToTime.bind(this)
     this.handleHold = this.handleHold.bind(this)
     // this.handleWindowSizeChange = this.handleWindowSizeChange.bind(this)
-    // this.toggleType = this.toggleType.bind(this)
+    this.toggleType = this.toggleType.bind(this)
   }
 
   componentDidMount() {
@@ -47,17 +47,30 @@ class Timer extends React.Component {
     this.setState({ width: window.innerWidth });
   }
 
+  handleInputChange(e) {
+    this.setState({ time: e.target.value });
+  }
+
+  handleInputSubmit(e) {
+    this.refresh();
+    e.preventDefault();
+  }
+
   handleSpace(e) {
-    // Starts timer when spacebar is pressed.
-    if (e.keyCode === 32) {
-      if (this.state.time === 0) {
-        this.startTimer()
-        // console.log("starttimer called");  For debugging
-      }
-      else {
-        // Stops timer, wait 0.5s then export and reset.
-        this.stopTimer();
-        this.setState({ refresh: true }, setTimeout(this.refresh, 500));     
+    if(this.state.manualInput){
+      return;
+    }else{
+      // Starts timer when spacebar is pressed.
+      if (e.keyCode === 32) {
+        if (this.state.time === 0) {
+          this.startTimer()
+          // console.log("starttimer called");  For debugging
+        }
+        else {
+          // Stops timer, wait 0.5s then export and reset.
+          this.stopTimer();
+          this.setState({ refresh: true }, () => setTimeout(this.refresh, 500));     
+        }
       }
     }
   }
@@ -159,7 +172,13 @@ class Timer extends React.Component {
           {/* Passing refresh as prop to Scrambler for scramble sequence to refresh when timer stops. */}
           <Scrambler refresh={this.state.refresh} toggleType={() => this.toggleType()} />
 
-          {this.state.manualInput ? "" :
+          {this.state.manualInput ? 
+            <>
+              <form onSubmit={(e) => this.handleInputSubmit(e)}>
+                <input id="manual-input" type="text" value={this.state.time} onChange={(e) => this.handleInputChange(e)} />
+              </form>
+            </>
+            :
             <ReactTouchEvents onTap={this.handleHold}>
               <p id="timer-text"> {this.state.time} </p>
             </ReactTouchEvents>
@@ -176,7 +195,9 @@ class Timer extends React.Component {
           <Row>
             <Scrambler refresh={this.state.refresh} toggleType={() => this.toggleType()} />
           </Row>
-          <p id="timer-text"> {this.state.time} </p>
+          {this.state.manualInput ? "" :
+            <p id="timer-text"> {this.state.time} </p>
+          }
 
           {/* Passing record & clear record to statistics for processing */}
           <Stats record={this.state.record} clearRecord={this.clearRecord} />

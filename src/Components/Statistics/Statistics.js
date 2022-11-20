@@ -37,7 +37,6 @@ class Stats extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log(prevProps);
     if(prevProps.record.length !== this.props.record.length){
       this.setState({
         ao5: this.avg_of_5(),
@@ -96,20 +95,13 @@ class Stats extends React.Component {
       for (var x = i; (i - x) < 5; x--) {
         solves = solves.concat(this.props.record[x])
       }
-      this.setState({ record: solves })
-      this.state.record.sort(function (a, b) { return a - b });
-      this.state.record.shift();
-      this.state.record.pop();
+      solves.sort(function (a, b) { return a - b });
+      solves.shift();
+      solves.pop();
 
-      this.setState({
-        ao5: ((this.stringToInt(this.state.record).reduce((a, b) => a + b, 0)) / 3).toFixed(2),
-      });
-    }
-    else {
-      // this.setState({ ao5: "" });
-    }
+      return ((this.stringToInt(solves).reduce((a, b) => a + b, 0)) / 3).toFixed(2);
 
-    return this.state.ao5;
+    }
   }
 
   avg_of_12() {
@@ -119,19 +111,12 @@ class Stats extends React.Component {
       for (var x = i; (i - x) < 12; x--) {
         solves = solves.concat(this.props.record[x])
       }
-      this.setState({ record: solves })
-      this.state.record.sort(function (a, b) { return a - b });
-      this.state.record.shift();
-      this.state.record.pop();
-      this.setState({
-        ao12: ((this.stringToInt(this.state.record).reduce((a, b) => a + b, 0)) / 10).toFixed(2),
-      });
-    }
-    else {
-      // this.setState({ ao12: "" });
-    }
+      solves.sort(function (a, b) { return a - b });
+      solves.shift();
+      solves.pop();
 
-    return this.state.ao12;
+      return ((this.stringToInt(solves).reduce((a, b) => a + b, 0)) / 10).toFixed(2)
+    }
   }
 
  

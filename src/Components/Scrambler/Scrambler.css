@@ -1,27 +1,24 @@
 #scramble-container {
-  display: inline-flex;
+  display: grid;
+  grid-template-columns: auto auto 40% auto ;
+  grid-column-gap: 1em;
   align-content: center;
   justify-content: center;
+  align-items: baseline;
   margin-top: 1%;
   width: 100%;
-}
-
-#dropdown-text {
-  font-size: 1.1em;
 }
 
 #scramble {
   display: inline-block;
   font-family: "Exo", sans-serif;
   color: #ffffff;
-  font-size: 1.1em;
+  font-size: 1em;
   text-align: center;
-  padding-left: 1%;
-  padding-right: 1%;
-  border-color: #ffffff;
-  border-style: solid;
+  padding: 0.375rem 0.75rem;
+  border: 2px solid white;
   cursor: pointer;
-  margin-bottom: 2vh;
+  border-radius:8px;
 }
 
 /* #scramble-selector {
@@ -34,7 +31,7 @@
   font-size: 1em;
   font-weight: bold;
   border-width: 2px;
-  border-radius: 0;
+  border-radius: 8px;
 }
 
 #refresh-container {
@@ -44,7 +41,7 @@
 #refresh_icon {
   color: #ffffff;
   width: auto;
-  height: 1.5em;
+  height: 1.3em;
 }
 
 #refresh_icon:active {

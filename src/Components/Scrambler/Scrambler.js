@@ -775,13 +775,6 @@ class Scrambler extends React.Component {
 
         </Dropdown>
 
-        <p id="scramble">
-          {this.state.scramble}
-          {this.refreshOnSolve()}
-        </p>
-
-        <img src={refresh} onClick={this.refreshScramble} id="refresh_icon" alt="refresh_button" />
-
         <Dropdown id="scramble-selector">
           <Dropdown.Toggle variant="outline-light" id="dropdown-text">
             {this.state.timer_type}
@@ -792,6 +785,15 @@ class Scrambler extends React.Component {
           </Dropdown.Menu>
 
         </Dropdown>
+
+        <p id="scramble">
+          {this.state.scramble}
+          {this.refreshOnSolve()}
+        </p>
+
+        <img src={refresh} onClick={this.refreshScramble} id="refresh_icon" alt="refresh_button" />
+
+
       </Row>
     );
   }
