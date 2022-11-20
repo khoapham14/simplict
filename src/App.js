@@ -1,5 +1,5 @@
 import React from 'react';
-import Timer from './Components/timer.js';
+import Timer from './Components/Timer/Timer.js';
 import { Row } from "react-bootstrap";
 import './App.css';
 

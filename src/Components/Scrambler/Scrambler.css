@@ -1,18 +1,20 @@
 #scramble-container {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 1vh;
+  display: inline-flex;
+  align-content: center;
+  justify-content: center;
+  margin-top: 1%;
+  width: 100%;
 }
 
 #dropdown-text {
-  font-size: 0.8em;
+  font-size: 1.1em;
 }
 
 #scramble {
+  display: inline-block;
   font-family: "Exo", sans-serif;
   color: #ffffff;
-  font-size: 1.2em;
+  font-size: 1.1em;
   text-align: center;
   padding-left: 1%;
   padding-right: 1%;
@@ -22,17 +24,17 @@
   margin-bottom: 2vh;
 }
 
-#scramble-selector {
+/* #scramble-selector {
   display: block;
   position: absolute;
   right: 0;
-  
-}
+} */
 
-#dropdown-text{
-    font-weight: bold;
-    border-width: 2px;
-    border-radius: 0;
+#dropdown-text {
+  font-size: 1em;
+  font-weight: bold;
+  border-width: 2px;
+  border-radius: 0;
 }
 
 #refresh-container {
@@ -42,10 +44,7 @@
 #refresh_icon {
   color: #ffffff;
   width: auto;
-  margin-top: 2%;
   height: 1.5em;
-  left: 0;
-  position: absolute;
 }
 
 #refresh_icon:active {

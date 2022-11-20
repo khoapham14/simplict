@@ -1,9 +1,9 @@
 import React from 'react';
 import { Row } from 'react-bootstrap';
-import Stats from './statistics.js';
-import Scrambler from './scrambler.js';
+import Stats from '../Statistics/Statistics.js';
+import Scrambler from '../Scrambler/Scrambler.js';
 import ReactTouchEvents from 'react-touch-events';
-import "./timer.css";
+import "./Timer.css";
 
 class Timer extends React.Component {
   constructor() {
@@ -16,6 +16,7 @@ class Timer extends React.Component {
       record: [],
       refresh: false,
       width: 0,
+      manualInput: false,
     };
 
     this.startTimer = this.startTimer.bind(this)
@@ -26,14 +27,16 @@ class Timer extends React.Component {
     this.refresh = this.refresh.bind(this)
     this.msToTime = this.msToTime.bind(this)
     this.handleHold = this.handleHold.bind(this)
-    this.handleWindowSizeChange = this.handleWindowSizeChange.bind(this)
-
+    // this.handleWindowSizeChange = this.handleWindowSizeChange.bind(this)
+    // this.toggleType = this.toggleType.bind(this)
   }
 
   componentDidMount() {
-    document.addEventListener("resize", this.handleWindowSizeChange,true);
+    // this.setState({ width: window.innerWidth });
     document.addEventListener("spacebar", this.handleSpace, true);
+
   }
+
 
   componentWillUnmount() {
     document.removeEventListener("resize", this.handleWindowSizeChange,true);
@@ -54,8 +57,7 @@ class Timer extends React.Component {
       else {
         // Stops timer, wait 0.5s then export and reset.
         this.stopTimer();
-        this.setState({ refresh: true });
-        setTimeout(this.refresh, 500);
+        this.setState({ refresh: true }, setTimeout(this.refresh, 500));     
       }
     }
   }
@@ -70,7 +72,6 @@ class Timer extends React.Component {
       setTimeout(this.refresh, 500);
     }
   }
-
 
 
   // Formatting time to hh:mm:ss.ms format
@@ -98,7 +99,7 @@ class Timer extends React.Component {
       time: this.state.time,
       start: Date.now() - this.state.time,
       isOn: true
-    })
+    });
 
 
     this.timer = setInterval(() => this.setState({
@@ -143,21 +144,26 @@ class Timer extends React.Component {
     this.setState({ record: [] });
   }
 
+  toggleType() {
+    console.log("Toggle Type Called");
+    this.setState({ manualInput: !this.state.manualInput });
+  }
+
   render() {
-    const width = this.state.width;
-    const isTouchDevice = width <= 768;
+    const isTouchDevice = this.state.width <= 768;
 
     if (isTouchDevice) {
       return (
         <div onKeyUp={this.handleSpace} tabIndex="0" id="timer-container">
 
           {/* Passing refresh as prop to Scrambler for scramble sequence to refresh when timer stops. */}
-          <Row>
-            <Scrambler refresh={this.state.refresh} />
-          </Row>
-          <ReactTouchEvents onTap={this.handleHold}>
-            <p id="timer-text"> {this.state.time} </p>
-          </ReactTouchEvents>
+          <Scrambler refresh={this.state.refresh} toggleType={() => this.toggleType()} />
+
+          {this.state.manualInput ? "" :
+            <ReactTouchEvents onTap={this.handleHold}>
+              <p id="timer-text"> {this.state.time} </p>
+            </ReactTouchEvents>
+          }
 
           {/* Passing record & clear record to statistics for processing */}
           <Stats record={this.state.record} clearRecord={this.clearRecord} />
@@ -168,15 +174,13 @@ class Timer extends React.Component {
         <div onKeyUp={this.handleSpace} tabIndex="0" id="timer-container">
           {/* Passing refresh as prop to Scrambler for scramble sequence to refresh when timer stops. */}
           <Row>
-            <Scrambler refresh={this.state.refresh} />
+            <Scrambler refresh={this.state.refresh} toggleType={() => this.toggleType()} />
           </Row>
           <p id="timer-text"> {this.state.time} </p>
 
           {/* Passing record & clear record to statistics for processing */}
           <Stats record={this.state.record} clearRecord={this.clearRecord} />
         </div>
-
-
       );
     }
 

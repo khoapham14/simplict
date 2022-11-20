@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Row, Col } from 'react-bootstrap';
 import { Line } from 'react-chartjs-2';
-import "./statistics.css";
+import "./Statistics.css";
 
 class Stats extends React.Component {
   constructor() {
@@ -34,23 +34,27 @@ class Stats extends React.Component {
   componentDidMount() {
     window.addEventListener("spacebar", this.handleSpace, true);
     window.addEventListener("resize", this.handleWindowSizeChange);
-    setInterval(() => this.setState({
-      ao5: this.avg_of_5(),
-      ao12: this.avg_of_12(),
-      best: this.getBest(),
-      worst: this.getWorst(),
-      session_average: this.getSessionAvg(),
-      session_mean: this.getSessionMean(),
-      x_axis: this.generateX(),
-      width: window.innerWidth,
-    }), 500)
-    
   }
 
-  componentWillUnmount() {
-    window.removeEventListener("spacebar", this.handleSpace, true);
-    window.removeEventListener("resize", this.handleWindowSizeChange);
+  componentDidUpdate(prevProps) {
+    console.log(prevProps);
+    if(prevProps.record.length !== this.props.record.length){
+      this.setState({
+        ao5: this.avg_of_5(),
+        ao12: this.avg_of_12(),
+        best: this.getBest(),
+        worst: this.getWorst(),
+        session_average: this.getSessionAvg(),
+        session_mean: this.getSessionMean(),
+        x_axis: this.generateX(),
+      })
+    }
   }
+
+  // componentWillUnmount() {
+  //   window.removeEventListener("spacebar", this.handleSpace, true);
+  //   window.removeEventListener("resize", this.handleWindowSizeChange);
+  // }
 
   handleWindowSizeChange(){
     this.setState({ width: window.innerWidth});
@@ -102,7 +106,7 @@ class Stats extends React.Component {
       });
     }
     else {
-      this.setState({ ao5: "" });
+      // this.setState({ ao5: "" });
     }
 
     return this.state.ao5;
@@ -124,7 +128,7 @@ class Stats extends React.Component {
       });
     }
     else {
-      this.setState({ ao12: "" });
+      // this.setState({ ao12: "" });
     }
 
     return this.state.ao12;
@@ -144,7 +148,7 @@ class Stats extends React.Component {
       this.setState({ session_average: ((this.stringToInt(session).reduce((a, b) => a + b, 0)) / (this.props.record.length - 2)).toFixed(2) });
     }
     else {
-      this.setState({ session_average: "" })
+      // this.setState({ session_average: "" })
     }
 
 
@@ -160,7 +164,7 @@ class Stats extends React.Component {
       this.setState({ session_mean: ((this.stringToInt(session).reduce((a, b) => a + b, 0)) / this.props.record.length).toFixed(2) })
     }
     else {
-      this.setState({ session_mean: "" });
+      // this.setState({ session_mean: "" });
     }
 
     return this.state.session_mean;
