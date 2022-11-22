@@ -95,6 +95,8 @@ class Stats extends React.Component {
       for (var x = i; (i - x) < 5; x--) {
         solves = solves.concat(this.props.record[x])
       }
+
+      this.setState({record: solves});
       solves.sort(function (a, b) { return a - b });
       solves.shift();
       solves.pop();
@@ -111,6 +113,8 @@ class Stats extends React.Component {
       for (var x = i; (i - x) < 12; x--) {
         solves = solves.concat(this.props.record[x])
       }
+
+      this.setState({record: solves});
       solves.sort(function (a, b) { return a - b });
       solves.shift();
       solves.pop();
@@ -168,7 +172,9 @@ class Stats extends React.Component {
   }
 
   deleteLastSolve() {
+    console.log("Delete last solve called");
     this.props.record.pop();
+    this.setState({ record: this.props.record})
   }
 
   render() {

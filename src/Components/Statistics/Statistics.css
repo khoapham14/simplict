@@ -21,6 +21,12 @@
     overflow: auto;
 }
 
+canvas {
+    background-color: white;
+    height: 100%;
+    width: auto;
+    padding: 0.3em;
+}
 
 #main_stats{
     font-size: 0.7em;

@@ -52,7 +52,7 @@ class Timer extends React.Component {
   }
 
   handleInputSubmit(e) {
-    this.refresh();
+    this.setState({ refresh: true }, () => setTimeout(this.refresh, 500));     
     e.preventDefault();
   }
 
