@@ -14,7 +14,7 @@
     padding-left: auto;
     margin-right: auto;
     font-family: 'Exo', sans-serif;
-    font-size: 15em;
+    font-size: 15rem;
     color: #FFFFFF;
     padding-top: 2%;
     cursor: pointer;
@@ -25,34 +25,9 @@
     border: 0.5px solid white;
     margin: 5px;
     text-align: center;
-    width: 50%;
-    font-size: 10em;
+    width: 35%;
+    font-size: 15rem;
     font-family: 'Exo', sans-serif;
     color: #FFFFFF;
 }
 
-@media only screen and (min-width: 1400px){
- 
-
-}
-
-@media only screen and (max-width: 1400px){
-    #timer-text{    
-        display: block;
-        padding-left: auto;
-        margin-right: auto;
-        font-family: 'Exo', sans-serif;
-        font-size: 11em;
-        color: #FFFFFF;
-        padding-top: 2%;
-    }
-}
-
-@media only screen and (max-width: 768px){
- 
-}
-
-
-@media only screen and (max-width: 480px){
- 
-}

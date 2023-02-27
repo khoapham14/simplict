@@ -1,20 +1,37 @@
+#simplict{
+    display: block;
+    height: 100vh;
+    width: 100vw;
+    background-image: url("/src/Assets/background.svg");
+    background-position: center top;
+    background-repeat: no-repeat;
+}
 
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+}
+  
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
 
+}
 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888; 
+    height: 0.5rem;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
 
 @media only screen and (min-width: 1400px){
     body{
         font-size: 16px;
-    }
-
-    #simplict{
-        display: block;
-        height: 100vh;
-        width: 100vw;
-        background-image: url("/src/Assets/Sublime.jpg");
-        background-size: 100% 100%;
-        background-position: center top;
-        background-repeat: no-repeat;
     }
 }
 
@@ -22,31 +39,11 @@
     body{
         font-size: 16px;
     }
-
-    #simplict{
-        display: block;
-        height: 100vh;
-        width: 100vw;
-        background-image: url("/src/Assets/Sublime.jpg");
-        background-size: 100% 100%;
-        background-position: center top;
-        background-repeat: no-repeat;
-    }
 }
 
 @media only screen and (max-width: 768px) and (min-width:480px){
     body{
         font-size: 12px;
-    }
-
-    #simplict{
-        display: block;
-        height: 100vh;
-        width: 100vw;
-        background-image: url("/src/Assets/Sublime.jpg");
-        background-size: 100% 100%;
-        background-position: center top;
-        background-repeat: no-repeat;
     }
 }
 
@@ -54,16 +51,6 @@
 @media only screen and (max-width: 480px){
     body{
         font-size: 10px;
-    }
-
-    #simplict{
-        display: block;
-        height: 75vh;
-        width: 100vw;
-        background-image: url("/src/Assets/Sublime.jpg");
-        background-size: 100% 100%;
-        background-position: center top;
-        background-repeat: no-repeat;
     }
 
 }

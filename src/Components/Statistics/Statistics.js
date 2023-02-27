@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Row, Col } from 'react-bootstrap';
 import { Line } from 'react-chartjs-2';
+import refresh from '../../Assets/Refresh_icon.png';
 import "./Statistics.css";
 
 class Stats extends React.Component {
@@ -187,203 +188,71 @@ class Stats extends React.Component {
           fill: false,
           lineTension: 0.5,
           backgroundColor: '#FFFFFF',
-          borderColor: '#939393',
+          borderColor: '#483d8b',
           borderWidth: 1,
           data: this.props.record
         }
       ]
     }
-
-    const width = this.state.width;
-    const isTablet = width <= 768 && width > 480;
-    const isMobile = width <= 480;
-    const isSmall_Desktop = width > 768 && width < 1400;
-
-    if (isMobile) {
       return (
         <React.Fragment>
           <div id="avg-container">
-            <p id="avg-text"> ao5: {this.state.ao5} </p>
-            <p id="avg-text"> ao12: {this.state.ao12}</p>
+            <p id="avg-text"> Average of 5: {this.state.ao5} </p>
+            <p id="avg-text"> Average of 12: {this.state.ao12}</p>
           </div>
           <Row id="dashboard">
-            <Col md={6} xs={12} id="s_section">
-              <p> Statistics </p>
+            <Col md={2} s={12} xs={12} id="stats_section">
               <Row>
-                <Col xs={6}  id="recorded_times">
-                  {this.props.record}
-                </Col>
-                <Col xs={6} id="main_stats">
-                  <p> Session Best: {this.state.best} </p>
-                  <p> Session Worst: {this.state.worst} </p>
-                  <p> Session Average:  {this.state.session_average}</p>
-                  <p> Session Mean: {this.state.session_mean} </p>
-                  <Button variant="outline-dark" id="reset-button" onClick={this.deleteLastSolve}> X </Button>
-                  <Button variant="outline-dark" id="reset-button" onClick={this.clearRecord}> Reset All </Button>
+                <Col md={12} s={12} xs={12}>
+                  <p id="dashboard_header">Session Summary</p>
+                  <div id="main_stats">
+                    <div> <strong>Session Best:</strong> {this.state.best} </div>
+                    <div> <strong>Session Worst:</strong> {this.state.worst} </div>
+                    <div> <strong>Session Average:</strong>  {this.state.session_average}</div>
+                    <div> <strong>Session Mean</strong> {this.state.session_mean} </div>
+                  </div>
                 </Col>
               </Row>
             </Col>
-            <Col md={6} xs={12} id="chart_section">
-              <p> Performance Data </p>
-              <Line data={graph}
-                width={2}
-                height={1}
-                options={{
-                  maintainAspectRatio: true,
-                  scales: {
-                    yAxes: [{
-                      ticks: {
-                        beginAtZero: true
-                      }
-                    }]
-                  }
-                }}
-              />
+            <Col md={5} s={12} xs={12} id="data_section">
+              <Row>
+                <Col md={4} s={12} xs={12}>
+                  <p id="dashboard_header">Session Data</p>
+                  <p id="main_stats">All individual times recorded for this session.</p>
+                  <Button variant="outline-dark" id="reset-button" onClick={this.deleteLastSolve}> Delete Last </Button>
+                  <Button variant="outline-dark" id="reset-button" onClick={this.clearRecord}>Reset</Button>
+                </Col>
+                <Col md={8} s={12} xs={12} id="recorded_times">
+                  {this.props.record}
+                </Col>
+              </Row>
+            </Col>
+            <Col md={5} s={12} xs={12} id="chart_section">
+              <Row>
+                <Col md={4} s={12} xs={12}>
+                <p id="dashboard_header">Session Chart</p>
+                <p id="main_stats">Recorded times plotted on a chart for easier visualization.</p>
+                </Col>
+                <Col md={8} s={12} xs={12}>
+                  <Line data={graph}
+                  options={{
+                    maintainAspectRatio: true,
+                    scales: {
+                      yAxes: [{
+                        ticks: {
+                          beginAtZero: true
+                        }
+                      }]
+                    }
+                  }}
+                  />
+                </Col>
+              </Row>
             </Col>
           </Row>
         </React.Fragment>
       );
     }
-    else if (isTablet) {
-      return (
-        <React.Fragment>
-          <div id="avg-container">
-            <p id="avg-text"> ao5: {this.state.ao5} </p>
-            <p id="avg-text"> ao12: {this.state.ao12}</p>
-          </div>
-          <Row id="dashboard">
-            <Col md={6} xs={12} id="s_section">
-              <p> Statistics </p>
-              <Row>
-                <Col md={8} xs={6} id="recorded_times">
-                  {this.props.record}
-                </Col>
-                <Col md={4} xs={6} id="main_stats">
-                  <p> Session Best: {this.state.best} </p>
-                  <p> Session Worst: {this.state.worst} </p>
-                  <p> Session Average:  {this.state.session_average}</p>
-                  <p> Session Mean: {this.state.session_mean} </p>
-                  <Button variant="outline-dark" id="reset-button" onClick={this.deleteLastSolve}> X </Button>
-                  <Button variant="outline-dark" id="reset-button" onClick={this.clearRecord}> Reset All </Button>
-                </Col>
-              </Row>
-            </Col>
-            <Col md={6} xs={12} id="chart_section">
-              <p> Performance Data </p>
-              <Line data={graph}
-                width={4}
-                height={2}
-                options={{
-                  maintainAspectRatio: true,
-                  scales: {
-                    yAxes: [{
-                      ticks: {
-                        beginAtZero: true
-                      }
-                    }]
-                  }
-                }}
-              />
-            </Col>
-          </Row>
-        </React.Fragment>
-      );
-    }
-    else if(isSmall_Desktop){
-      return (
-        <React.Fragment>
-          <div id="avg-container">
-            <p id="avg-text"> ao5: {this.state.ao5} </p>
-            <p id="avg-text"> ao12: {this.state.ao12}</p>
-          </div>
-          <Row id="dashboard">
-            <Col md={6} xs={12} id="s_section">
-              <p> Statistics </p>
-              <Row>
-                <Col md={8} xs={6} id="recorded_times">
-                  {this.props.record}
-                </Col>
-                <Col md={4} xs={6} id="main_stats">
-                  <p> Session Best: {this.state.best} </p>
-                  <p> Session Worst: {this.state.worst} </p>
-                  <p> Session Average:  {this.state.session_average}</p>
-                  <p> Session Mean: {this.state.session_mean} </p>
-                  <Button variant="outline-dark" id="reset-button" onClick={this.deleteLastSolve}> X </Button>
-                  <Button variant="outline-dark" id="reset-button" onClick={this.clearRecord}> Reset All </Button>
-                </Col>
-              </Row>
-            </Col>
-            <Col md={6} xs={12} id="chart_section">
-              <p> Performance Data </p>
-              <Line data={graph}
-                width={3}
-                height={1}
-                options={{
-                  maintainAspectRatio: true,
-                  scales: {
-                    yAxes: [{
-                      ticks: {
-                        beginAtZero: true
-                      }
-                    }]
-                  }
-                }}
-              />
-            </Col>
-          </Row>
-        </React.Fragment>
-      );
-    }
-    else {
-      return (
-        <React.Fragment>
-          <div id="avg-container">
-            <p id="avg-text"> ao5: {this.state.ao5} </p>
-            <p id="avg-text"> ao12: {this.state.ao12}</p>
-          </div>
-          <Row id="dashboard">
-            <Col md={6} xs={12} id="s_section">
-              <p> Statistics </p>
-              <Row>
-                <Col md={8} id="recorded_times">
-                  {this.props.record}
-                </Col>
-                <Col md={4} id="main_stats">
-                  <p> Session Best: {this.state.best} </p>
-                  <p> Session Worst: {this.state.worst} </p>
-                  <p> Session Average:  {this.state.session_average}</p>
-                  <p> Session Mean: {this.state.session_mean} </p>
-                  <Button variant="outline-dark" id="reset-button" onClick={this.deleteLastSolve}> X </Button>
-                  <Button variant="outline-dark" id="reset-button" onClick={this.clearRecord}> Reset All </Button>
-                </Col>
-              </Row>
-            </Col>
-            <Col md={6} xs={12} id="chart_section">
-              <p> Performance Data </p>
-              <Line data={graph}
-                width={5}
-                height={1}
-                options={{
-                  maintainAspectRatio: true,
-                  scales: {
-                    yAxes: [{
-                      ticks: {
-                        beginAtZero: true
-                      }
-                    }]
-                  }
-                }}
-              />
-            </Col>
-          </Row>
-        </React.Fragment>
-      );
-    }
-
-
-
-  }
-
 }
 
 export default Stats;
