@@ -1,27 +1,27 @@
 {
   "files": {
-    "main.css": "/simplict/static/css/main.0adbd49d.chunk.css",
-    "main.js": "/simplict/static/js/main.f5dc7666.chunk.js",
-    "main.js.map": "/simplict/static/js/main.f5dc7666.chunk.js.map",
-    "runtime-main.js": "/simplict/static/js/runtime-main.1c8f42cb.js",
-    "runtime-main.js.map": "/simplict/static/js/runtime-main.1c8f42cb.js.map",
+    "main.css": "/simplict/static/css/main.611271b0.chunk.css",
+    "main.js": "/simplict/static/js/main.af395847.chunk.js",
+    "main.js.map": "/simplict/static/js/main.af395847.chunk.js.map",
+    "runtime-main.js": "/simplict/static/js/runtime-main.20ed4acc.js",
+    "runtime-main.js.map": "/simplict/static/js/runtime-main.20ed4acc.js.map",
     "static/css/2.ae9f1eb3.chunk.css": "/simplict/static/css/2.ae9f1eb3.chunk.css",
-    "static/js/2.86bab50b.chunk.js": "/simplict/static/js/2.86bab50b.chunk.js",
-    "static/js/2.86bab50b.chunk.js.map": "/simplict/static/js/2.86bab50b.chunk.js.map",
-    "static/js/3.aae0a686.chunk.js": "/simplict/static/js/3.aae0a686.chunk.js",
-    "static/js/3.aae0a686.chunk.js.map": "/simplict/static/js/3.aae0a686.chunk.js.map",
+    "static/js/2.d800b505.chunk.js": "/simplict/static/js/2.d800b505.chunk.js",
+    "static/js/2.d800b505.chunk.js.map": "/simplict/static/js/2.d800b505.chunk.js.map",
+    "static/js/3.6516f704.chunk.js": "/simplict/static/js/3.6516f704.chunk.js",
+    "static/js/3.6516f704.chunk.js.map": "/simplict/static/js/3.6516f704.chunk.js.map",
     "index.html": "/simplict/index.html",
     "static/css/2.ae9f1eb3.chunk.css.map": "/simplict/static/css/2.ae9f1eb3.chunk.css.map",
-    "static/css/main.0adbd49d.chunk.css.map": "/simplict/static/css/main.0adbd49d.chunk.css.map",
-    "static/js/2.86bab50b.chunk.js.LICENSE.txt": "/simplict/static/js/2.86bab50b.chunk.js.LICENSE.txt",
+    "static/css/main.611271b0.chunk.css.map": "/simplict/static/css/main.611271b0.chunk.css.map",
+    "static/js/2.d800b505.chunk.js.LICENSE.txt": "/simplict/static/js/2.d800b505.chunk.js.LICENSE.txt",
     "static/media/Refresh_icon.a86495a5.png": "/simplict/static/media/Refresh_icon.a86495a5.png",
-    "static/media/App.css": "/simplict/static/media/Sublime.4860c930.jpg"
+    "static/media/App.css": "/simplict/static/media/background.1d37f490.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.1c8f42cb.js",
+    "static/js/runtime-main.20ed4acc.js",
     "static/css/2.ae9f1eb3.chunk.css",
-    "static/js/2.86bab50b.chunk.js",
-    "static/css/main.0adbd49d.chunk.css",
-    "static/js/main.f5dc7666.chunk.js"
+    "static/js/2.d800b505.chunk.js",
+    "static/css/main.611271b0.chunk.css",
+    "static/js/main.af395847.chunk.js"
   ]
 }
