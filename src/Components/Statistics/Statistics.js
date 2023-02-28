@@ -136,10 +136,6 @@ class Stats extends React.Component {
       session.pop();
 
     }
-    else {
-      // this.setState({ session_average: "" })
-    }
-
 
     return ((this.stringToInt(session).reduce((a, b) => a + b, 0)) / (this.props.record.length - 2)).toFixed(2);
   }
@@ -172,9 +168,20 @@ class Stats extends React.Component {
     this.setState({ record: this.props.record})
   }
 
+  toggleDashboard() {
+    var x = document.getElementById("dashboard");
+    if (x.style.display === "none") {
+      x.style.display = "flex";
+    } else {
+      x.style.display = "none";
+    }
+  }
+
   render() {
     const chartOptions={
+      // maintainAspectRatio: true,
       responsive: true,
+      height: "10rem",
       scales: {
         yAxes: [{
           ticks: {
@@ -199,15 +206,16 @@ class Stats extends React.Component {
       ]
     }
       return (
-        <React.Fragment>
-          <div id="avg-container">
+        <div id="stats">
+          <Row id="avg-container">
             <p id="avg-text"> Average of 5: {this.state.ao5} </p>
             <p id="avg-text"> Average of 12: {this.state.ao12}</p>
-          </div>
+          </Row>
+          <Button variant="outline-dark" id="toggle-button" onClick={this.toggleDashboard}>Dashboard</Button>
           <Row id="dashboard">
-            <Col md={2} s={12} xs={12} id="stats_section">
+            <Col lg={2} md={12} xs={12} id="stats_section">
               <Row>
-                <Col md={12} s={12} xs={12}>
+                <Col lg={12} md={12} xs={12}>
                   <p id="dashboard_header">Session Summary</p>
                   <div id="main_stats">
                     <div> <strong>Session Best:</strong> {this.state.best} </div>
@@ -218,34 +226,36 @@ class Stats extends React.Component {
                 </Col>
               </Row>
             </Col>
-            <Col md={5} s={12} xs={12} id="data_section">
+            <Col lg={5} md={12} xs={12} id="data_section">
               <Row>
-                <Col md={4} s={12} xs={12}>
+                <Col lg={4} md={12} xs={12}>
                   <p id="dashboard_header">Session Data</p>
                   <p id="main_stats">All individual times recorded for this session.</p>
                   <Button variant="outline-dark" id="reset-button" onClick={this.deleteLastSolve}> Delete Last </Button>
                   <Button variant="outline-dark" id="reset-button" onClick={this.clearRecord}>Reset</Button>
                 </Col>
-                <Col md={8} s={12} xs={12} id="recorded_times">
+                <Col lg={8} md={12} xs={12} id="recorded_times">
                   {this.props.record}
                 </Col>
               </Row>
             </Col>
-            <Col md={5} s={12} xs={12} id="chart_section">
+            <Col lg={5} md={12} xs={12} id="chart_section">
               <Row>
-                <Col md={4} s={12} xs={12}>
+                <Col lg={4} md={12} xs={12}>
                 <p id="dashboard_header">Session Chart</p>
                 <p id="main_stats">Recorded times plotted on a chart for easier visualization.</p>
                 </Col>
-                <Col md={8} s={12} xs={12}>
+                <Col lg={8} md={12} xs={12}>
                   <Line data={chartData}
+                  width={5}
+                  height={2}
                   options={chartOptions}
                   />
                 </Col>
               </Row>
             </Col>
           </Row>
-        </React.Fragment>
+        </div>
       );
     }
 }

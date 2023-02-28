@@ -3,6 +3,7 @@
     margin-left: auto;
     margin-right: auto;
     font-size: 1rem;
+    margin-bottom: 2rem;
 }
 
 #stats_section{
@@ -66,24 +67,48 @@ canvas {
     background-color: white;
 }
 
+#toggle-button{
+    border-color: #FFFFFF;
+    color: #FFFFFF;
+    margin-right: 2px;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+}
+
+#toggle-button:hover{
+    color: #483d8b;
+    background-color: white;
+}
+
 #dashboard_header{
     font-size:1.5rem;
     font-weight: 700;
 }
 
+/* #stats{
+    display: grid;
+} */
+
 #dashboard{
-    position:absolute;
     background-color: transparent;
+    position: fixed;
     bottom: 0;
+    align-self: flex-end;
     font-size: 1rem;
     font-weight: 200;
     border-top:1px solid white;
     height: 25%;
-    width: 100%;
+    width: 100vw;
     color: #FFFFFF;
     text-align: left;
     overflow: auto;
     padding: 1rem;
 }
 
+@media only screen and (max-width: 767px) {
+    #dashboard{
+        height: 35%;
+    }
+}
 

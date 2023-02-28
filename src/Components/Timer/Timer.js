@@ -167,7 +167,7 @@ class Timer extends React.Component {
 
     if (isTouchDevice) {
       return (
-        <div onKeyUp={this.handleSpace} tabIndex="0" id="timer-container">
+        <div onKeyUp={(e) => this.handleSpace(e)} tabIndex="0" id="timer-container">
 
           {/* Passing refresh as prop to Scrambler for scramble sequence to refresh when timer stops. */}
           <Scrambler refresh={this.state.refresh} toggleType={() => this.toggleType()} />
@@ -190,7 +190,7 @@ class Timer extends React.Component {
       );
     } else {
       return (
-        <div onKeyUp={this.handleSpace} tabIndex="0" id="timer-container">
+        <div onKeyUp={(e) => this.handleSpace(e)} tabIndex="0" id="timer-container">
           {/* Passing refresh as prop to Scrambler for scramble sequence to refresh when timer stops. */}
           <Row>
             <Scrambler refresh={this.state.refresh} toggleType={() => this.toggleType()} />
