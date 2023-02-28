@@ -5,13 +5,13 @@ import './App.css';
 
 function App() {
   return (
-    <div>
-      <div id="simplict">
-        <Row>
-          <Timer />
-        </Row>
-      </div>
+
+    <div id="simplict">
+      <Row>
+        <Timer />
+      </Row>
     </div>
+
   );
 }
 

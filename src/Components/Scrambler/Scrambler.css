@@ -5,8 +5,8 @@
   align-content: center;
   justify-content: center;
   align-items: baseline;
-  margin-top: 1%;
-  width: 100%;
+  padding-top: 1%;
+  width: 100vw;
 }
 
 #scramble {

@@ -135,14 +135,13 @@ class Stats extends React.Component {
       session.shift();
       session.pop();
 
-      this.setState({ session_average: ((this.stringToInt(session).reduce((a, b) => a + b, 0)) / (this.props.record.length - 2)).toFixed(2) });
     }
     else {
       // this.setState({ session_average: "" })
     }
 
 
-    return this.state.session_average;
+    return ((this.stringToInt(session).reduce((a, b) => a + b, 0)) / (this.props.record.length - 2)).toFixed(2);
   }
 
   getSessionMean() {
@@ -150,14 +149,9 @@ class Stats extends React.Component {
     if (this.props.record.length > 0) {
       session = session = session.concat(this.props.record);
       session.sort(function (a, b) { return a - b });
-
-      this.setState({ session_mean: ((this.stringToInt(session).reduce((a, b) => a + b, 0)) / this.props.record.length).toFixed(2) })
-    }
-    else {
-      // this.setState({ session_mean: "" });
     }
 
-    return this.state.session_mean;
+    return ((this.stringToInt(session).reduce((a, b) => a + b, 0)) / this.props.record.length).toFixed(2);
   }
 
   clearRecord() {
@@ -179,8 +173,18 @@ class Stats extends React.Component {
   }
 
   render() {
+    const chartOptions={
+      responsive: true,
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
 
-    const graph = {
+    const chartData = {
       labels: this.state.x_axis,
       datasets: [
         {
@@ -234,17 +238,8 @@ class Stats extends React.Component {
                 <p id="main_stats">Recorded times plotted on a chart for easier visualization.</p>
                 </Col>
                 <Col md={8} s={12} xs={12}>
-                  <Line data={graph}
-                  options={{
-                    maintainAspectRatio: true,
-                    scales: {
-                      yAxes: [{
-                        ticks: {
-                          beginAtZero: true
-                        }
-                      }]
-                    }
-                  }}
+                  <Line data={chartData}
+                  options={chartOptions}
                   />
                 </Col>
               </Row>
