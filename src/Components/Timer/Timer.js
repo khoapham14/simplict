@@ -15,7 +15,7 @@ class Timer extends React.Component {
       result: 0,
       record: [],
       refresh: false,
-      width: 0,
+      width: window.innerWidth,
       manualInput: false,
     };
 
@@ -27,24 +27,25 @@ class Timer extends React.Component {
     this.refresh = this.refresh.bind(this)
     this.msToTime = this.msToTime.bind(this)
     this.handleHold = this.handleHold.bind(this)
-    // this.handleWindowSizeChange = this.handleWindowSizeChange.bind(this)
+    this.handleWindowSizeChange = this.handleWindowSizeChange.bind(this)
     this.toggleType = this.toggleType.bind(this)
   }
 
   componentDidMount() {
-    // this.setState({ width: window.innerWidth });
-    document.addEventListener("spacebar", this.handleSpace, true);
-
+    window.addEventListener("resize", this.handleWindowSizeChange,true);
+    window.addEventListener("spacebar", this.handleSpace, true);
   }
 
 
   componentWillUnmount() {
-    document.removeEventListener("resize", this.handleWindowSizeChange,true);
-    document.removeEventListener("spacebar", this.handleSpace, true);
+    window.removeEventListener("resize", this.handleWindowSizeChange,true);
+    window.removeEventListener("spacebar", this.handleSpace, true);
   }
 
   handleWindowSizeChange() {
-    this.setState({ width: window.innerWidth });
+    let windowWidth = window.innerWidth;
+    this.setState({ width: windowWidth });
+    console.log(this.state.width);
   }
 
   handleInputChange(e) {
@@ -163,14 +164,12 @@ class Timer extends React.Component {
   }
 
   render() {
-    const isTouchDevice = this.state.width <= 768;
-
-    if (isTouchDevice) {
+    if (this.state.width <= 767) {
       return (
         <div onKeyUp={(e) => this.handleSpace(e)} tabIndex="0" id="timer-container">
 
           {/* Passing refresh as prop to Scrambler for scramble sequence to refresh when timer stops. */}
-          <Scrambler refresh={this.state.refresh} toggleType={() => this.toggleType()} />
+          <Scrambler refresh={this.state.refresh} toggleType={() => this.toggleType()} width={this.state.width} />
 
           {this.state.manualInput ? 
             <>
@@ -185,7 +184,7 @@ class Timer extends React.Component {
           }
 
           {/* Passing record & clear record to statistics for processing */}
-          <Stats record={this.state.record} clearRecord={this.clearRecord} />
+          <Stats record={this.state.record} clearRecord={this.clearRecord} width={this.state.width}/>
         </div>
       );
     } else {
@@ -193,14 +192,19 @@ class Timer extends React.Component {
         <div onKeyUp={(e) => this.handleSpace(e)} tabIndex="0" id="timer-container">
           {/* Passing refresh as prop to Scrambler for scramble sequence to refresh when timer stops. */}
           <Row>
-            <Scrambler refresh={this.state.refresh} toggleType={() => this.toggleType()} />
+            <Scrambler refresh={this.state.refresh} toggleType={() => this.toggleType()} width={this.state.width}/>
           </Row>
-          {this.state.manualInput ? "" :
+          {this.state.manualInput ?             
+            <>
+              <form onSubmit={(e) => this.handleInputSubmit(e)}>
+                <input id="manual-input" type="text" value={this.state.time} onChange={(e) => this.handleInputChange(e)} />
+              </form>
+            </> :
             <p id="timer-text"> {this.state.time} </p>
           }
 
           {/* Passing record & clear record to statistics for processing */}
-          <Stats record={this.state.record} clearRecord={this.clearRecord} />
+          <Stats record={this.state.record} clearRecord={this.clearRecord} width={this.state.width}/>
         </div>
       );
     }

@@ -17,7 +17,6 @@ class Stats extends React.Component {
       session_mean: 0,
       full_record: [],
       x_axis: [],
-      width: window.innerWidth,
     };
 
     this.avg_of_5 = this.avg_of_5.bind(this)
@@ -29,7 +28,6 @@ class Stats extends React.Component {
     this.getSessionAvg = this.getSessionAvg.bind(this)
     this.deleteLastSolve = this.deleteLastSolve.bind(this)
     this.generateX = this.generateX.bind(this)
-    this.handleWindowSizeChange = this.handleWindowSizeChange.bind(this)
   }
 
   componentDidMount() {
@@ -51,14 +49,10 @@ class Stats extends React.Component {
     }
   }
 
-  // componentWillUnmount() {
-  //   window.removeEventListener("spacebar", this.handleSpace, true);
-  //   window.removeEventListener("resize", this.handleWindowSizeChange);
-  // }
-
-  handleWindowSizeChange(){
-    this.setState({ width: window.innerWidth});
+  componentWillUnmount() {
+    window.removeEventListener("spacebar", this.handleSpace, true);
   }
+
 
   stringToInt(array) {
     return array.map(Number);
@@ -207,10 +201,10 @@ class Stats extends React.Component {
     }
       return (
         <div id="stats">
-          <Row id="avg-container">
+          <div id="avg-container">
             <p id="avg-text"> Average of 5: {this.state.ao5} </p>
             <p id="avg-text"> Average of 12: {this.state.ao12}</p>
-          </Row>
+          </div>
           <Button variant="outline-dark" id="toggle-button" onClick={this.toggleDashboard}>Dashboard</Button>
           <Row id="dashboard">
             <Col lg={2} md={12} xs={12} id="stats_section">

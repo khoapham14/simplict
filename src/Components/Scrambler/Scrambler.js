@@ -31,21 +31,18 @@ class Scrambler extends React.Component {
   componentDidMount() {
     //Generates an initial scramble
     this.scramble();
-    document.addEventListener("refresh_scr", this.refreshOnSolve, true)
-
+    window.addEventListener("refresh_scr", this.refreshOnSolve, true)
+    window.addEventListener("resize", this.handleWindowSizeChange, true)
   }
 
   componentWillUnmount() {
     clearTimeout(this.refreshScramble);
-    document.removeEventListener("refresh_scr", this.refreshOnSolve, true)
+    window.removeEventListener("refresh_scr", this.refreshOnSolve, true)
   }
 
   refreshOnSolve() {
     if (this.props.refresh === true) {
       this.refreshScramble();
-    }
-    else {
-      // Do Nothing
     }
   }
 
@@ -753,7 +750,7 @@ class Scrambler extends React.Component {
   }
 
   setTimerType(type) {
-    if(this.state.timer_type !== type) {
+    if (this.state.timer_type !== type) {
       this.setState({ timer_type: type });
       this.props.toggleType();
     }
@@ -761,40 +758,81 @@ class Scrambler extends React.Component {
 
   render() {
     return (
-      <Row id="scramble-container">
-        <Dropdown id="scramble-selector">
-          <Dropdown.Toggle variant="outline-light" id="dropdown-text">
-            {this.state.puzzle_type}
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item id="dropdown-text" onClick={this.get3Scramble}> 3x3 </Dropdown.Item>
-            <Dropdown.Item id="dropdown-text" onClick={this.get4Scramble}> 4x4 </Dropdown.Item>
-            <Dropdown.Item id="dropdown-text" onClick={this.get5Scramble}> 5x5 </Dropdown.Item>
-            <Dropdown.Item id="dropdown-text" onClick={this.getMScramble}> Megaminx </Dropdown.Item>
-          </Dropdown.Menu>
+      <>
+        {this.props.width > 767 ?
+          <div id="scramble-container">
+            <Dropdown id="scramble-selector">
+              <Dropdown.Toggle variant="outline-light" id="dropdown-text">
+                {this.state.puzzle_type} 
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item id="dropdown-text" onClick={this.get3Scramble}> 3x3 </Dropdown.Item>
+                <Dropdown.Item id="dropdown-text" onClick={this.get4Scramble}> 4x4 </Dropdown.Item>
+                <Dropdown.Item id="dropdown-text" onClick={this.get5Scramble}> 5x5 </Dropdown.Item>
+                <Dropdown.Item id="dropdown-text" onClick={this.getMScramble}> Megaminx </Dropdown.Item>
+              </Dropdown.Menu>
 
-        </Dropdown>
+            </Dropdown>
 
-        <Dropdown id="scramble-selector">
-          <Dropdown.Toggle variant="outline-light" id="dropdown-text">
-            {this.state.timer_type}
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item id="dropdown-text" onClick={() => this.setTimerType("Timer")}> Timer </Dropdown.Item>
-            <Dropdown.Item id="dropdown-text" onClick={() => this.setTimerType("Manual")}> Manual Input </Dropdown.Item>
-          </Dropdown.Menu>
+            <Dropdown id="scramble-selector">
+              <Dropdown.Toggle variant="outline-light" id="dropdown-text">
+                {this.state.timer_type}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item id="dropdown-text" onClick={() => this.setTimerType("Timer")}> Timer </Dropdown.Item>
+                <Dropdown.Item id="dropdown-text" onClick={() => this.setTimerType("Manual")}> Manual Input </Dropdown.Item>
+              </Dropdown.Menu>
 
-        </Dropdown>
+            </Dropdown>
 
-        <p id="scramble">
-          {this.state.scramble}
-          {this.refreshOnSolve()}
-        </p>
+            <div id="scramble">
+              {this.state.scramble}
+              {this.refreshOnSolve()}
+            </div>
+            <div id="refresh-icon-container">
+              <img src={refresh} onClick={this.refreshScramble} id="refresh_icon" alt="refresh_button" />
+            </div>
+          </div>
+          :
+          <div id="scramble-container">
+            <Row>
+              <Dropdown id="scramble-selector">
+                <Dropdown.Toggle variant="outline-light" id="dropdown-text">
+                  {this.state.puzzle_type} Sub 767
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item id="dropdown-text" onClick={this.get3Scramble}> 3x3 </Dropdown.Item>
+                  <Dropdown.Item id="dropdown-text" onClick={this.get4Scramble}> 4x4 </Dropdown.Item>
+                  <Dropdown.Item id="dropdown-text" onClick={this.get5Scramble}> 5x5 </Dropdown.Item>
+                  <Dropdown.Item id="dropdown-text" onClick={this.getMScramble}> Megaminx </Dropdown.Item>
+                </Dropdown.Menu>
 
-        <img src={refresh} onClick={this.refreshScramble} id="refresh_icon" alt="refresh_button" />
+              </Dropdown>
 
+              <Dropdown id="scramble-selector">
+                <Dropdown.Toggle variant="outline-light" id="dropdown-text">
+                  {this.state.timer_type}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item id="dropdown-text" onClick={() => this.setTimerType("Timer")}> Timer </Dropdown.Item>
+                  <Dropdown.Item id="dropdown-text" onClick={() => this.setTimerType("Manual")}> Manual Input </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
 
-      </Row>
+              <div id="refresh-icon-container">
+                <img src={refresh} onClick={this.refreshScramble} id="refresh_icon" alt="refresh_button" />
+              </div>
+            </Row>
+
+            <Row>
+              <p id="scramble">
+                {this.state.scramble}
+                {this.refreshOnSolve()}
+              </p>
+            </Row>
+          </div>
+        }
+      </>
     );
   }
 }

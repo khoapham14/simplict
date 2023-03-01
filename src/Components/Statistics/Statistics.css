@@ -1,7 +1,7 @@
 #avg-container{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+    width: 100%;
+    text-align: center;
+    position: relative;
     font-size: 1rem;
     margin-bottom: 2rem;
 }
@@ -87,7 +87,7 @@ canvas {
 }
 
 /* #stats{
-    display: grid;
+   position: fixed;
 } */
 
 #dashboard{
@@ -108,7 +108,7 @@ canvas {
 
 @media only screen and (max-width: 767px) {
     #dashboard{
-        height: 35%;
+        height: 20%;
     }
 }
 

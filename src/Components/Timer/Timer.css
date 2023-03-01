@@ -10,14 +10,15 @@
 }
 
 #timer-text{    
-    display: block;
-    padding-left: auto;
-    margin-right: auto;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
     font-family: 'Exo', sans-serif;
     font-size: 15rem;
     color: #FFFFFF;
     padding-top: 2%;
     cursor: pointer;
+    position: relative;
 }
 
 #manual-input{
@@ -29,5 +30,19 @@
     font-size: 15rem;
     font-family: 'Exo', sans-serif;
     color: #FFFFFF;
+}
+
+@media only screen and (max-width: 767px) {
+    #timer-text{
+        /* font-size: 10rem; */
+        margin-bottom: 0.5rem;
+    }
+}
+
+@media only screen and (max-width: 576px) {
+    #timer-text{
+        font-size: 8rem;
+        margin-bottom: 0.5rem;
+    }
 }
 
