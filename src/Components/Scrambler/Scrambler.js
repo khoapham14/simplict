@@ -798,7 +798,7 @@ class Scrambler extends React.Component {
             <Row>
               <Dropdown id="scramble-selector">
                 <Dropdown.Toggle variant="outline-light" id="dropdown-text">
-                  {this.state.puzzle_type} Sub 767
+                  {this.state.puzzle_type}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item id="dropdown-text" onClick={this.get3Scramble}> 3x3 </Dropdown.Item>
