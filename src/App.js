@@ -1,17 +1,19 @@
 import React from 'react';
 import Timer from './Components/Timer/Timer.js';
-import { Row } from "react-bootstrap";
+import FloatingShapes from './Components/UI/FloatingShapes.js';
 import './App.css';
 
 function App() {
   return (
+    <div id="simplict" className="relative min-h-screen overflow-hidden">
+      {/* Maximalism animated background */}
+      <FloatingShapes />
 
-    <div id="simplict">
-      <Row>
+      {/* Main content */}
+      <div className="relative z-10">
         <Timer />
-      </Row>
+      </div>
     </div>
-
   );
 }
 

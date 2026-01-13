@@ -1,0 +1,514 @@
+/* ============================================
+   SOLVE DETAIL MODAL STYLES
+   ============================================ */
+
+/* Modal Overlay */
+.solve-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+
+  /* Glassmorphism backdrop */
+  background: rgba(13, 13, 26, 0.85);
+  backdrop-filter: blur(8px);
+
+  /* Entrance animation */
+  animation: modal-fade-in 0.3s ease-out;
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal Container */
+.solve-modal-container {
+  position: relative;
+  width: 100%;
+  max-width: 550px;
+  max-height: 90vh;
+  overflow-y: auto;
+
+  /* Glassmorphism card */
+  background: linear-gradient(135deg,
+    rgba(45, 27, 78, 0.95),
+    rgba(13, 13, 26, 0.98)
+  );
+  backdrop-filter: blur(20px);
+
+  /* Border and shadows */
+  border: 4px solid #FF3AF2;
+  border-radius: 1.5rem;
+  padding: 2rem;
+
+  /* Multi-layer shadows */
+  box-shadow:
+    0 0 40px rgba(255, 58, 242, 0.4),
+    8px 8px 0 #00F5D4,
+    16px 16px 0 #FFE600,
+    0 10px 50px rgba(0, 0, 0, 0.5);
+
+  /* Entrance animation */
+  animation: modal-slide-up 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modal-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Close Button */
+.solve-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 44px;
+  height: 44px;
+
+  background: linear-gradient(135deg, #00F5D4, #7B2FFF);
+  border: 3px solid #FFE600;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  box-shadow:
+    0 0 15px rgba(0, 245, 212, 0.4),
+    3px 3px 0 #FF3AF2;
+}
+
+.solve-modal-close:hover {
+  transform: rotate(90deg) scale(1.15);
+  box-shadow:
+    0 0 25px rgba(0, 245, 212, 0.6),
+    4px 4px 0 #FF3AF2,
+    8px 8px 0 #FF6B35;
+}
+
+.solve-modal-close:focus-visible {
+  outline: 3px solid #00F5D4;
+  outline-offset: 4px;
+}
+
+.solve-modal-close svg {
+  width: 24px;
+  height: 24px;
+  stroke: white;
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Modal Header */
+.solve-modal-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding-right: 3rem;
+}
+
+.solve-modal-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+
+  /* Gradient text */
+  background: linear-gradient(90deg, #FF3AF2, #00F5D4, #FFE600);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.solve-modal-number {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #00F5D4;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Time Display Section */
+.solve-modal-time-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 1.5rem 1rem;
+
+  /* Glass container */
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 3px solid #7B2FFF;
+  border-radius: 1rem;
+
+  box-shadow:
+    0 0 20px rgba(123, 47, 255, 0.3),
+    inset 0 0 30px rgba(0, 245, 212, 0.1);
+}
+
+.solve-modal-time {
+  font-family: 'Outfit', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: #FFFFFF;
+
+  /* Text shadow */
+  text-shadow:
+    2px 2px 0 #7B2FFF,
+    4px 4px 0 #FF6B35;
+}
+
+.solve-modal-time.dnf {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.solve-modal-dnf-badge {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  padding: 0.4rem 0.8rem;
+
+  background: linear-gradient(135deg, #FF6B35, #FF3AF2);
+  border: 3px solid #FFE600;
+  border-radius: 0.75rem;
+  color: white;
+
+  box-shadow:
+    0 0 20px rgba(255, 107, 53, 0.5),
+    3px 3px 0 #7B2FFF;
+}
+
+.solve-modal-original-time {
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 1.5rem;
+}
+
+/* Section Titles */
+.solve-modal-section-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #FFE600;
+  margin: 0 0 0.75rem 0;
+}
+
+/* Scramble Section */
+.solve-modal-scramble-section {
+  margin-bottom: 1.5rem;
+}
+
+.solve-modal-scramble {
+  font-family: 'DM Sans', monospace;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.8;
+  color: white;
+  padding: 1rem 1.25rem;
+
+  /* Card styling */
+  background: rgba(13, 13, 26, 0.7);
+  backdrop-filter: blur(15px);
+  border: 3px solid #00F5D4;
+  border-radius: 0.75rem;
+
+  /* Pattern overlay */
+  background-image:
+    radial-gradient(circle, rgba(255, 230, 0, 0.08) 1px, transparent 1px),
+    linear-gradient(135deg, rgba(13, 13, 26, 0.7), rgba(45, 27, 78, 0.5));
+  background-size: 24px 24px, 100% 100%;
+
+  box-shadow:
+    0 0 20px rgba(0, 245, 212, 0.3),
+    4px 4px 0 #FF3AF2;
+
+  word-break: break-word;
+}
+
+/* Details Section */
+.solve-modal-details {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0.5rem;
+}
+
+.solve-modal-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.solve-modal-detail-row:last-child {
+  border-bottom: none;
+}
+
+.solve-modal-detail-label {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  color: #888;
+}
+
+.solve-modal-detail-value {
+  font-family: 'DM Sans', sans-serif;
+  color: white;
+}
+
+/* Penalty Section */
+.solve-modal-penalty-section {
+  margin-bottom: 1.5rem;
+}
+
+.solve-modal-penalty-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.solve-modal-penalty-btn {
+  flex: 1;
+  min-width: 100px;
+  padding: 0.75rem 1rem;
+
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  background: rgba(255, 255, 255, 0.05);
+  border: 3px solid #7B2FFF;
+  border-radius: 0.75rem;
+  color: white;
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+
+  box-shadow:
+    0 0 10px rgba(123, 47, 255, 0.2),
+    3px 3px 0 #00F5D4;
+}
+
+.solve-modal-penalty-btn:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.02);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #00F5D4;
+  box-shadow:
+    0 0 20px rgba(0, 245, 212, 0.4),
+    4px 4px 0 #FF3AF2;
+}
+
+.solve-modal-penalty-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.solve-modal-penalty-btn:focus-visible {
+  outline: 3px solid #00F5D4;
+  outline-offset: 4px;
+}
+
+/* Active State */
+.solve-modal-penalty-btn.active {
+  background: linear-gradient(135deg, #FF3AF2, #7B2FFF);
+  border-color: #FFE600;
+  box-shadow:
+    0 0 25px rgba(255, 58, 242, 0.5),
+    4px 4px 0 #00F5D4;
+}
+
+/* Clear Button Variant */
+.solve-modal-penalty-btn.clear {
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.solve-modal-penalty-btn.clear:hover:not(:disabled) {
+  border-style: solid;
+  border-color: #FF6B35;
+}
+
+/* Disabled State */
+.solve-modal-penalty-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Actions Section */
+.solve-modal-actions {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.solve-modal-delete-btn {
+  padding: 0.75rem 2rem;
+
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  background: linear-gradient(135deg, #FF6B35, #FF3AF2);
+  border: 3px solid #FFE600;
+  border-radius: 0.75rem;
+  color: white;
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+
+  box-shadow:
+    0 0 15px rgba(255, 107, 53, 0.4),
+    3px 3px 0 #7B2FFF;
+}
+
+.solve-modal-delete-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow:
+    0 0 25px rgba(255, 107, 53, 0.6),
+    4px 4px 0 #7B2FFF,
+    8px 8px 0 #FF3AF2;
+}
+
+.solve-modal-delete-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.solve-modal-delete-btn:focus-visible {
+  outline: 3px solid #FF6B35;
+  outline-offset: 4px;
+}
+
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+
+@media only screen and (max-width: 767px) {
+  .solve-modal-container {
+    padding: 1.5rem;
+    border-width: 3px;
+    box-shadow:
+      0 0 30px rgba(255, 58, 242, 0.4),
+      6px 6px 0 #00F5D4;
+  }
+
+  .solve-modal-title {
+    font-size: 1.5rem;
+  }
+
+  .solve-modal-time {
+    font-size: 2.5rem;
+  }
+
+  .solve-modal-dnf-badge {
+    font-size: 1.25rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .solve-modal-scramble {
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .solve-modal-penalty-btn {
+    font-size: 0.9rem;
+    padding: 0.6rem 0.75rem;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .solve-modal-overlay {
+    padding: 0.5rem;
+  }
+
+  .solve-modal-container {
+    padding: 1rem;
+    border-radius: 1rem;
+  }
+
+  .solve-modal-close {
+    width: 36px;
+    height: 36px;
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+
+  .solve-modal-close svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .solve-modal-title {
+    font-size: 1.25rem;
+  }
+
+  .solve-modal-time {
+    font-size: 2rem;
+  }
+
+  .solve-modal-penalty-buttons {
+    flex-direction: column;
+  }
+
+  .solve-modal-penalty-btn {
+    min-width: 100%;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================ */
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .solve-modal-overlay,
+  .solve-modal-container,
+  .solve-modal-penalty-btn,
+  .solve-modal-close,
+  .solve-modal-delete-btn {
+    animation: none !important;
+    transition-duration: 0.05s !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .solve-modal-container {
+    border-width: 5px;
+  }
+
+  .solve-modal-penalty-btn {
+    border-width: 4px;
+  }
+}

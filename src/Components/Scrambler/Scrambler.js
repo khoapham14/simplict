@@ -1,7 +1,7 @@
 import React from 'react';
 import refresh from '../../Assets/Refresh_icon.png';
 import "./Scrambler.css";
-import { Dropdown, Row } from 'react-bootstrap';
+import Dropdown from '../UI/Dropdown';
 
 
 class Scrambler extends React.Component {
@@ -35,6 +35,13 @@ class Scrambler extends React.Component {
     window.addEventListener("resize", this.handleWindowSizeChange, true)
   }
 
+  componentDidUpdate(prevProps) {
+    // Check if refresh prop changed to trigger scramble refresh
+    if (this.props.refresh === true && prevProps.refresh === false) {
+      this.refreshScramble();
+    }
+  }
+
   componentWillUnmount() {
     clearTimeout(this.refreshScramble);
     window.removeEventListener("refresh_scr", this.refreshOnSolve, true)
@@ -46,23 +53,48 @@ class Scrambler extends React.Component {
     }
   }
 
+  // Helper to set scramble and notify parent
+  setScrambleAndNotify(scramble) {
+    this.setState({ scramble }, () => {
+      // Notify parent of new scramble
+      if (this.props.onScrambleGenerated) {
+        this.props.onScrambleGenerated(scramble);
+      }
+    });
+  }
+
+  // Helper to notify parent of puzzle type change
+  notifyPuzzleTypeChange(puzzleType) {
+    if (this.props.onPuzzleTypeChange) {
+      this.props.onPuzzleTypeChange(puzzleType);
+    }
+  }
+
   get3Scramble() {
-    this.setState({ puzzle_type: "3x3" })
+    this.setState({ puzzle_type: "3x3" }, () => {
+      this.notifyPuzzleTypeChange("3x3");
+    });
     this.refreshScramble();
   }
 
   get4Scramble() {
-    this.setState({ puzzle_type: "4x4" })
+    this.setState({ puzzle_type: "4x4" }, () => {
+      this.notifyPuzzleTypeChange("4x4");
+    });
     this.refreshScramble();
   }
 
   get5Scramble() {
-    this.setState({ puzzle_type: "5x5" })
+    this.setState({ puzzle_type: "5x5" }, () => {
+      this.notifyPuzzleTypeChange("5x5");
+    });
     this.refreshScramble();
   }
 
   getMScramble() {
-    this.setState({ puzzle_type: "Mega" })
+    this.setState({ puzzle_type: "Mega" }, () => {
+      this.notifyPuzzleTypeChange("Mega");
+    });
     this.refreshScramble();
   }
 
@@ -320,7 +352,7 @@ class Scrambler extends React.Component {
         }
 
         final_scr = final_scr.join(" ");
-        this.setState({ scramble: final_scr });
+        this.setScrambleAndNotify(final_scr);
         break;
 
 
@@ -499,7 +531,7 @@ class Scrambler extends React.Component {
         }
 
         final_scr = final_scr.join(" ");
-        this.setState({ scramble: final_scr });
+        this.setScrambleAndNotify(final_scr);
         break;
 
       case "5x5":
@@ -678,7 +710,7 @@ class Scrambler extends React.Component {
         }
 
         final_scr = final_scr.join(" ");
-        this.setState({ scramble: final_scr });
+        this.setScrambleAndNotify(final_scr);
         break;
 
       case "Mega":
@@ -736,7 +768,7 @@ class Scrambler extends React.Component {
         }
 
         final_scr = final_scr.join(" ");
-        this.setState({ scramble: final_scr });
+        this.setScrambleAndNotify(final_scr);
         break;
 
       default:
@@ -758,81 +790,43 @@ class Scrambler extends React.Component {
 
   render() {
     return (
-      <>
-        {this.props.width > 767 ?
-          <div id="scramble-container">
-            <Dropdown id="scramble-selector">
-              <Dropdown.Toggle variant="outline-light" id="dropdown-text">
-                {this.state.puzzle_type} 
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item id="dropdown-text" onClick={this.get3Scramble}> 3x3 </Dropdown.Item>
-                <Dropdown.Item id="dropdown-text" onClick={this.get4Scramble}> 4x4 </Dropdown.Item>
-                <Dropdown.Item id="dropdown-text" onClick={this.get5Scramble}> 5x5 </Dropdown.Item>
-                <Dropdown.Item id="dropdown-text" onClick={this.getMScramble}> Megaminx </Dropdown.Item>
-              </Dropdown.Menu>
+      <div id="scramble-bar">
+        {/* Left Controls */}
+        <div className="scramble-controls">
+          <Dropdown id="scramble-selector">
+            <Dropdown.Toggle variant="outline-light" id="dropdown-text">
+              {this.state.puzzle_type}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={this.get3Scramble}> 3x3 </Dropdown.Item>
+              <Dropdown.Item onClick={this.get4Scramble}> 4x4 </Dropdown.Item>
+              <Dropdown.Item onClick={this.get5Scramble}> 5x5 </Dropdown.Item>
+              <Dropdown.Item onClick={this.getMScramble}> Megaminx </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
 
-            </Dropdown>
+          <Dropdown id="scramble-selector">
+            <Dropdown.Toggle variant="outline-light" id="dropdown-text">
+              {this.state.timer_type}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => this.setTimerType("Timer")}> Timer </Dropdown.Item>
+              <Dropdown.Item onClick={() => this.setTimerType("Manual")}> Manual Input </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
 
-            <Dropdown id="scramble-selector">
-              <Dropdown.Toggle variant="outline-light" id="dropdown-text">
-                {this.state.timer_type}
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item id="dropdown-text" onClick={() => this.setTimerType("Timer")}> Timer </Dropdown.Item>
-                <Dropdown.Item id="dropdown-text" onClick={() => this.setTimerType("Manual")}> Manual Input </Dropdown.Item>
-              </Dropdown.Menu>
+        {/* Scramble Text - Center */}
+        <p id="scramble">
+          {this.state.scramble}
+          {this.refreshOnSolve()}
+        </p>
 
-            </Dropdown>
-
-            <div id="scramble">
-              {this.state.scramble}
-              {this.refreshOnSolve()}
-            </div>
-            <div id="refresh-icon-container">
-              <img src={refresh} onClick={this.refreshScramble} id="refresh_icon" alt="refresh_button" />
-            </div>
-          </div>
-          :
-          <div id="scramble-container">
-            <Row>
-              <Dropdown id="scramble-selector">
-                <Dropdown.Toggle variant="outline-light" id="dropdown-text">
-                  {this.state.puzzle_type}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item id="dropdown-text" onClick={this.get3Scramble}> 3x3 </Dropdown.Item>
-                  <Dropdown.Item id="dropdown-text" onClick={this.get4Scramble}> 4x4 </Dropdown.Item>
-                  <Dropdown.Item id="dropdown-text" onClick={this.get5Scramble}> 5x5 </Dropdown.Item>
-                  <Dropdown.Item id="dropdown-text" onClick={this.getMScramble}> Megaminx </Dropdown.Item>
-                </Dropdown.Menu>
-
-              </Dropdown>
-
-              <Dropdown id="scramble-selector">
-                <Dropdown.Toggle variant="outline-light" id="dropdown-text">
-                  {this.state.timer_type}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item id="dropdown-text" onClick={() => this.setTimerType("Timer")}> Timer </Dropdown.Item>
-                  <Dropdown.Item id="dropdown-text" onClick={() => this.setTimerType("Manual")}> Manual Input </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-
-              <div id="refresh-icon-container">
-                <img src={refresh} onClick={this.refreshScramble} id="refresh_icon" alt="refresh_button" />
-              </div>
-            </Row>
-
-            <Row>
-              <p id="scramble">
-                {this.state.scramble}
-                {this.refreshOnSolve()}
-              </p>
-            </Row>
-          </div>
-        }
-      </>
+        {/* Refresh Button - Right */}
+        <div id="refresh-icon-container" onClick={this.refreshScramble} title="Generate new scramble">
+          <img src={refresh} id="refresh_icon" alt="Generate new scramble" />
+        </div>
+      </div>
     );
   }
 }

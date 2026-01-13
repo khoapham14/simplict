@@ -1,26 +1,120 @@
+@import "tailwindcss";
+
+/* Maximalism Design Tokens */
+:root {
+  /* Base Colors */
+  --color-bg: #0D0D1A;
+  --color-bg-secondary: #1A1A2E;
+  --color-muted: #2D1B4E;
+
+  /* 5 Accent Colors */
+  --color-magenta: #FF3AF2;
+  --color-cyan: #00F5D4;
+  --color-yellow: #FFE600;
+  --color-orange: #FF6B35;
+  --color-purple: #7B2FFF;
+
+  /* Typography */
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-exo: 'Exo', sans-serif;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Shadows */
+  --shadow-glow: 0 0 20px rgba(255, 58, 242, 0.5);
+  --shadow-multi: 8px 8px 0 #00F5D4, 16px 16px 0 #FFE600;
+}
+
+/* Global Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: 'Exo', sans-serif;
+  padding: 0;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-bg);
+  color: #FFFFFF;
+  overflow-x: hidden;
 }
 
-.row{
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+/* Custom Scrollbar - Maximalism Style */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-magenta), var(--color-cyan));
+  border-radius: 5px;
+  border: 2px solid var(--color-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--color-yellow), var(--color-orange));
+}
+
+/* Firefox Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-magenta) var(--color-bg-secondary);
+}
+
+/* Focus Visible - Accessibility */
+:focus-visible {
+  outline: 3px solid var(--color-cyan);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--color-magenta);
+  color: white;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.15s !important;
+  }
+}
+
+/* Legacy row/container support (will be removed after migration) */
+.row {
   margin-left: 0;
   margin-right: 0;
   padding-left: 0;
   padding-right: 0;
 }
 
-.container{
+.container {
   margin-left: 0;
   margin-right: 0;
   padding-left: 0;
   padding-right: 0;
 }
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
