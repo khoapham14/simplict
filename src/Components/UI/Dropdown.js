@@ -10,7 +10,7 @@ const Dropdown = ({ children, className = '', id }) => {
 
   // Close dropdown on outside click
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = event => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
       }
@@ -24,7 +24,7 @@ const Dropdown = ({ children, className = '', id }) => {
 
   // Close on Escape key
   useEffect(() => {
-    const handleEscape = (event) => {
+    const handleEscape = event => {
       if (event.key === 'Escape') {
         setIsOpen(false);
       }
@@ -43,11 +43,14 @@ const Dropdown = ({ children, className = '', id }) => {
         if (child.type === DropdownToggle) {
           return React.cloneElement(child, {
             onClick: () => setIsOpen(!isOpen),
-            isOpen
+            isOpen,
           });
         }
         if (child.type === DropdownMenu) {
-          return React.cloneElement(child, { isOpen });
+          return React.cloneElement(child, {
+            isOpen,
+            closeDropdown: () => setIsOpen(false),
+          });
         }
         return child;
       })}
@@ -61,7 +64,7 @@ const DropdownToggle = ({
   isOpen,
   variant = 'outline-light',
   className = '',
-  id
+  id,
 }) => {
   const baseClasses = `
     px-4 py-2 rounded-xl font-bold text-base
@@ -76,7 +79,7 @@ const DropdownToggle = ({
       hover:bg-white/10 hover:border-[var(--color-cyan)] hover:shadow-glow-cyan
       hover:scale-105
     `,
-    'primary': `
+    primary: `
       border-[var(--color-yellow)] text-white
       bg-gradient-to-r from-[var(--color-magenta)] to-[var(--color-purple)]
       hover:shadow-max hover:scale-105
@@ -109,7 +112,7 @@ const DropdownToggle = ({
   );
 };
 
-const DropdownMenu = ({ children, isOpen }) => {
+const DropdownMenu = ({ children, isOpen, closeDropdown }) => {
   if (!isOpen) return null;
 
   return (
@@ -125,7 +128,7 @@ const DropdownMenu = ({ children, isOpen }) => {
       "
       role="menu"
       style={{
-        animation: 'fadeIn 0.2s ease-out'
+        animation: 'fadeIn 0.2s ease-out',
       }}
     >
       <style>{`
@@ -134,15 +137,25 @@ const DropdownMenu = ({ children, isOpen }) => {
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
-      {children}
+      {React.Children.map(children, child => {
+        if (child && child.type === DropdownItem) {
+          return React.cloneElement(child, { closeDropdown });
+        }
+        return child;
+      })}
     </div>
   );
 };
 
-const DropdownItem = ({ children, onClick, className = '', id }) => {
+const DropdownItem = ({ children, onClick, closeDropdown, className = '', id }) => {
+  const handleClick = e => {
+    if (onClick) onClick(e);
+    if (closeDropdown) closeDropdown();
+  };
+
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
       id={id}
       className={`
         w-full px-4 py-3 text-left text-base font-semibold

@@ -9,21 +9,13 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 } from 'chart.js';
 import SolveDetailModal from './SolveDetailModal';
-import "./Statistics.css";
+import './Statistics.css';
 
 // Register Chart.js components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 class Stats extends React.Component {
   constructor() {
@@ -50,12 +42,16 @@ class Stats extends React.Component {
   }
 
   componentDidMount() {
-    window.addEventListener("resize", this.handleWindowSizeChange);
+    window.addEventListener('resize', this.handleWindowSizeChange);
+    // Calculate stats on initial mount
+    this.recalculateStats();
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.solves.length !== this.props.solves.length ||
-        prevProps.solves !== this.props.solves) {
+    if (
+      prevProps.solves.length !== this.props.solves.length ||
+      prevProps.solves !== this.props.solves
+    ) {
       this.recalculateStats();
     }
   }
@@ -85,19 +81,27 @@ class Stats extends React.Component {
     const pad = (n, z = 2) => ('00' + n).slice(-z);
 
     if (s < 60000) {
-      return pad((s % 6e4) / 1000 | 0) + '.' + pad(s % 1000, 2);
+      return pad(((s % 6e4) / 1000) | 0) + '.' + pad(s % 1000, 2);
     } else if (s >= 60000 && s < 3600000) {
-      return pad((s % 3.6e6) / 6e4 | 0) + ':' + pad((s % 6e4) / 1000 | 0) + '.' + pad(s % 1000, 2);
+      return (
+        pad(((s % 3.6e6) / 6e4) | 0) + ':' + pad(((s % 6e4) / 1000) | 0) + '.' + pad(s % 1000, 2)
+      );
     } else {
-      return pad(s / 3.6e6 | 0) + ':' + pad((s % 3.6e6) / 6e4 | 0) + ':' + pad((s % 6e4) / 1000 | 0) + '.' + pad(s % 1000, 2);
+      return (
+        pad((s / 3.6e6) | 0) +
+        ':' +
+        pad(((s % 3.6e6) / 6e4) | 0) +
+        ':' +
+        pad(((s % 6e4) / 1000) | 0) +
+        '.' +
+        pad(s % 1000, 2)
+      );
     }
   }
 
   // Filter valid solves (exclude DNF) and return penalized times
   filterValidSolves(solves) {
-    return solves
-      .filter(solve => solve.penalty !== 'DNF')
-      .map(solve => solve.penalizedTimeMs);
+    return solves.filter(solve => solve.penalty !== 'DNF').map(solve => solve.penalizedTimeMs);
   }
 
   generateX() {
@@ -142,26 +146,25 @@ class Stats extends React.Component {
     if (this.props.solves.length < 5) return '--';
 
     const last5 = this.props.solves.slice(-5);
+    const dnfCount = last5.filter(s => s.penalty === 'DNF').length;
+
+    // WCA rule: Maximum 1 DNF allowed in Ao5
+    if (dnfCount >= 2) return 'DNF';
+
     const validTimes = this.filterValidSolves(last5);
-
-    // Need at least 3 valid times for Ao5 (can have up to 2 DNF)
-    if (validTimes.length < 3) return 'DNF';
-
-    // Sort and remove best/worst
     const sorted = [...validTimes].sort((a, b) => a - b);
 
-    // If we have exactly 3 times, average all 3
-    if (sorted.length === 3) {
-      const avg = sorted.reduce((a, b) => a + b, 0) / 3;
+    if (dnfCount === 0) {
+      // No DNF: Remove best and worst from 5 times -> average middle 3
+      const middleTimes = sorted.slice(1, -1);
+      const avg = middleTimes.reduce((a, b) => a + b, 0) / middleTimes.length;
+      return this.msToTime(avg);
+    } else {
+      // 1 DNF: DNF counts as worst, only remove best -> average remaining 3
+      const timesAfterRemovingBest = sorted.slice(1);
+      const avg = timesAfterRemovingBest.reduce((a, b) => a + b, 0) / timesAfterRemovingBest.length;
       return this.msToTime(avg);
     }
-
-    // Otherwise, trim best and worst
-    sorted.shift(); // Remove best
-    sorted.pop();   // Remove worst
-
-    const avg = sorted.reduce((a, b) => a + b, 0) / sorted.length;
-    return this.msToTime(avg);
   }
 
   avg_of_12() {
@@ -176,7 +179,7 @@ class Stats extends React.Component {
     // Sort and remove best/worst
     const sorted = [...validTimes].sort((a, b) => a - b);
     sorted.shift(); // Remove best
-    sorted.pop();   // Remove worst
+    sorted.pop(); // Remove worst
 
     const avg = sorted.reduce((a, b) => a + b, 0) / sorted.length;
     return this.msToTime(avg);
@@ -190,7 +193,7 @@ class Stats extends React.Component {
     // Sort and remove best/worst
     const sorted = [...validTimes].sort((a, b) => a - b);
     sorted.shift(); // Remove best
-    sorted.pop();   // Remove worst
+    sorted.pop(); // Remove worst
 
     const avg = sorted.reduce((a, b) => a + b, 0) / sorted.length;
     return this.msToTime(avg);
@@ -226,11 +229,11 @@ class Stats extends React.Component {
   }
 
   toggleDashboard() {
-    const x = document.getElementById("dashboard");
-    if (x.style.display === "none") {
-      x.style.display = "flex";
+    const x = document.getElementById('dashboard');
+    if (x.style.display === 'none') {
+      x.style.display = 'flex';
     } else {
-      x.style.display = "none";
+      x.style.display = 'none';
     }
   }
 
@@ -264,34 +267,37 @@ class Stats extends React.Component {
             color: '#FFFFFF',
             font: {
               family: 'DM Sans, sans-serif',
-              weight: 'bold'
-            }
-          }
+              weight: 'bold',
+            },
+          },
         },
         title: {
-          display: false
-        }
+          display: false,
+        },
       },
       scales: {
         y: {
           beginAtZero: true,
           title: {
             display: true,
-            text: 'Time (seconds)',
+            text: 'Time',
             color: '#00F5D4',
             font: {
               family: 'DM Sans, sans-serif',
               weight: 'bold',
-              size: 11
-            }
+              size: 14,
+            },
           },
           ticks: {
-            precision: 0,
-            color: '#FFFFFF'
+            precision: 2,
+            color: '#FFFFFF',
+            callback: function (value) {
+              return value.toFixed(2) + 's';
+            },
           },
           grid: {
-            color: 'rgba(255, 58, 242, 0.2)'
-          }
+            color: 'rgba(255, 58, 242, 0.2)',
+          },
         },
         x: {
           display: true,
@@ -302,17 +308,17 @@ class Stats extends React.Component {
             font: {
               family: 'DM Sans, sans-serif',
               weight: 'bold',
-              size: 11
-            }
+              size: 14,
+            },
           },
           ticks: {
-            color: '#FFFFFF'
+            color: '#FFFFFF',
           },
           grid: {
-            color: 'rgba(0, 245, 212, 0.2)'
-          }
-        }
-      }
+            color: 'rgba(0, 245, 212, 0.2)',
+          },
+        },
+      },
     };
 
     const chartData = {
@@ -333,9 +339,9 @@ class Stats extends React.Component {
           pointHoverBackgroundColor: '#FFE600',
           pointHoverBorderColor: '#FF3AF2',
           data: this.getChartData(),
-          spanGaps: true // Skip null values (DNF)
-        }
-      ]
+          spanGaps: true, // Skip null values (DNF)
+        },
+      ],
     };
 
     return (
@@ -344,16 +350,30 @@ class Stats extends React.Component {
           <p id="avg-text"> Average of 5: {this.state.ao5} </p>
           <p id="avg-text"> Average of 12: {this.state.ao12}</p>
         </div>
-        <Button variant="outline-dark" id="toggle-button" onClick={this.toggleDashboard}>Dashboard</Button>
+        <Button variant="outline-dark" id="toggle-button" onClick={this.toggleDashboard}>
+          Dashboard
+        </Button>
         <div id="dashboard" className="flex flex-col lg:flex-row gap-4 p-4">
           {/* Session Summary Section */}
           <div id="stats_section" className="lg:w-1/5 w-full">
             <p id="dashboard_header">Session Summary</p>
             <div id="main_stats">
-              <div> <strong>Session Best:</strong> {this.state.best} </div>
-              <div> <strong>Session Worst:</strong> {this.state.worst} </div>
-              <div> <strong>Session Average:</strong> {this.state.session_average}</div>
-              <div> <strong>Session Mean:</strong> {this.state.session_mean} </div>
+              <div>
+                {' '}
+                <strong>Session Best:</strong> {this.state.best}{' '}
+              </div>
+              <div>
+                {' '}
+                <strong>Session Worst:</strong> {this.state.worst}{' '}
+              </div>
+              <div>
+                {' '}
+                <strong>Session Average:</strong> {this.state.session_average}
+              </div>
+              <div>
+                {' '}
+                <strong>Session Mean:</strong> {this.state.session_mean}{' '}
+              </div>
             </div>
           </div>
 
@@ -364,52 +384,73 @@ class Stats extends React.Component {
                 <p id="dashboard_header">Session Data</p>
                 <p id="main_stats">All individual times recorded for this session.</p>
                 <div className="flex gap-2 mt-2">
-                  <Button variant="outline-dark" id="reset-button" onClick={this.deleteLastSolve}> Delete Last </Button>
-                  <Button variant="outline-dark" id="reset-button" onClick={this.clearRecord}>Reset</Button>
+                  <Button variant="outline-dark" id="reset-button" onClick={this.deleteLastSolve}>
+                    {' '}
+                    Delete Last{' '}
+                  </Button>
+                  <Button variant="outline-dark" id="reset-button" onClick={this.clearRecord}>
+                    Reset
+                  </Button>
                 </div>
               </div>
-              <div className="lg:w-2/3" id="recorded_times" role="list" aria-label="Recorded solve times">
+              <div
+                className="lg:w-2/3"
+                id="recorded_times"
+                role="list"
+                aria-label="Recorded solve times"
+              >
                 {this.props.solves.length === 0 ? (
                   <p className="empty-state">No solves recorded yet</p>
                 ) : (
-                  this.props.solves.slice().reverse().map((solve, index, arr) => {
-                    const solveNumber = arr.length - index;
-                    const isBest = bestMs !== null && solve.penalizedTimeMs === bestMs && solve.penalty !== 'DNF' && this.props.solves.length > 1;
-                    const isWorst = worstMs !== null && solve.penalizedTimeMs === worstMs && solve.penalty !== 'DNF' && this.props.solves.length > 1;
+                  this.props.solves
+                    .slice()
+                    .reverse()
+                    .map((solve, index, arr) => {
+                      const solveNumber = arr.length - index;
+                      const isBest =
+                        bestMs !== null &&
+                        solve.penalizedTimeMs === bestMs &&
+                        solve.penalty !== 'DNF' &&
+                        this.props.solves.length > 1;
+                      const isWorst =
+                        worstMs !== null &&
+                        solve.penalizedTimeMs === worstMs &&
+                        solve.penalty !== 'DNF' &&
+                        this.props.solves.length > 1;
 
-                    // Build class names
-                    let className = 'time-pill';
-                    if (isBest) className += ' best-time';
-                    if (isWorst) className += ' worst-time';
-                    if (solve.penalty === '+2') className += ' penalty-plus2';
-                    if (solve.penalty === 'DNF') className += ' penalty-dnf';
+                      // Build class names
+                      let className = 'time-pill';
+                      if (isBest) className += ' best-time';
+                      if (isWorst) className += ' worst-time';
+                      if (solve.penalty === '+2') className += ' penalty-plus2';
+                      if (solve.penalty === 'DNF') className += ' penalty-dnf';
 
-                    // Aria label
-                    let ariaLabel = `Solve ${solveNumber}: ${this.getDisplayTime(solve)}`;
-                    if (isBest) ariaLabel = `Best time: ${this.getDisplayTime(solve)}`;
-                    if (isWorst) ariaLabel = `Worst time: ${this.getDisplayTime(solve)}`;
-                    if (solve.penalty === '+2') ariaLabel += ' (plus 2 penalty)';
-                    if (solve.penalty === 'DNF') ariaLabel += ' (did not finish)';
+                      // Aria label
+                      let ariaLabel = `Solve ${solveNumber}: ${this.getDisplayTime(solve)}`;
+                      if (isBest) ariaLabel = `Best time: ${this.getDisplayTime(solve)}`;
+                      if (isWorst) ariaLabel = `Worst time: ${this.getDisplayTime(solve)}`;
+                      if (solve.penalty === '+2') ariaLabel += ' (plus 2 penalty)';
+                      if (solve.penalty === 'DNF') ariaLabel += ' (did not finish)';
 
-                    return (
-                      <span
-                        key={solve.id}
-                        className={className}
-                        role="listitem"
-                        aria-label={ariaLabel}
-                        onClick={() => this.props.onOpenSolveDetail(solve.id)}
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            this.props.onOpenSolveDetail(solve.id);
-                          }
-                        }}
-                      >
-                        {this.getDisplayTime(solve)}
-                      </span>
-                    );
-                  })
+                      return (
+                        <span
+                          key={solve.id}
+                          className={className}
+                          role="listitem"
+                          aria-label={ariaLabel}
+                          onClick={() => this.props.onOpenSolveDetail(solve.id)}
+                          tabIndex={0}
+                          onKeyDown={e => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              this.props.onOpenSolveDetail(solve.id);
+                            }
+                          }}
+                        >
+                          {this.getDisplayTime(solve)}
+                        </span>
+                      );
+                    })
                 )}
               </div>
             </div>
@@ -420,14 +461,10 @@ class Stats extends React.Component {
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="lg:w-1/3">
                 <p id="dashboard_header">Performance Graph</p>
-                <p id="main_stats">Track your solve times over the session. X-axis shows solve number, Y-axis shows time in seconds.</p>
+                <p id="main_stats">Visual progression of your solve times.</p>
               </div>
               <div className="lg:w-2/3">
-                <Line data={chartData}
-                  width={5}
-                  height={2}
-                  options={chartOptions}
-                />
+                <Line data={chartData} width={5} height={2} options={chartOptions} />
               </div>
             </div>
           </div>
@@ -439,7 +476,7 @@ class Stats extends React.Component {
           onClose={this.props.onCloseSolveDetail}
           solve={this.props.selectedSolve}
           solveNumber={this.props.selectedSolveNumber}
-          onApplyPenalty={(penalty) => {
+          onApplyPenalty={penalty => {
             if (this.props.selectedSolve) {
               this.props.onApplyPenalty(this.props.selectedSolve.id, penalty);
             }
