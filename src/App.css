@@ -1,62 +1,83 @@
-#simplict{
-    display: block;
-    height: 100%;
-    min-height: 100vh;
-    width: 100vw;
-    background-image: url("/src/Assets/background.svg");
-    background-position: center top;
-    background-repeat: no-repeat;
+/* Main App Container - Maximalism Style */
+#simplict {
+  display: block;
+  min-height: 100vh;
+  width: 100vw;
+  padding: 2rem 1.5rem;
+  background-color: var(--color-bg);
+  position: relative;
+
+  /* Gradient mesh background */
+  background-image:
+    radial-gradient(ellipse at top left, rgba(123, 47, 255, 0.2), transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(255, 58, 242, 0.2), transparent 50%),
+    radial-gradient(ellipse at center, rgba(0, 245, 212, 0.1), transparent 60%);
 }
 
-body, html {
-    height: 100%;
+/* Animated gradient overlay */
+#simplict::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.15;
+  background: linear-gradient(
+    135deg,
+    var(--color-magenta) 0%,
+    var(--color-purple) 25%,
+    var(--color-cyan) 50%,
+    var(--color-yellow) 75%,
+    var(--color-magenta) 100%
+  );
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+  pointer-events: none;
+  z-index: 1;
 }
 
-/* width */
-::-webkit-scrollbar {
-    width: 5px;
-}
-  
-/* Track */
-::-webkit-scrollbar-track {
-    background: #f1f1f1; 
-
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-/* Handle */
-::-webkit-scrollbar-thumb {
-    background: #888; 
-    width: 5px;
+/* Stripe pattern overlay */
+#simplict::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 20px,
+    var(--color-cyan) 20px,
+    var(--color-cyan) 40px
+  );
+  pointer-events: none;
+  z-index: 2;
 }
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: #555; 
+/* Responsive typography */
+@media only screen and (min-width: 1400px) {
+  body {
+    font-size: 16px;
+  }
 }
 
-@media only screen and (min-width: 1400px){
-    body{
-        font-size: 16px;
-    }
+@media only screen and (max-width: 1400px) and (min-width: 768px) {
+  body {
+    font-size: 16px;
+  }
 }
 
-@media only screen and (max-width: 1400px) and (min-width: 768px){
-    body{
-        font-size: 16px;
-    }
+@media only screen and (max-width: 768px) and (min-width: 480px) {
+  body {
+    font-size: 12px;
+  }
 }
 
-@media only screen and (max-width: 768px) and (min-width:480px){
-    body{
-        font-size: 12px;
-    }
+@media only screen and (max-width: 480px) {
+  body {
+    font-size: 10px;
+  }
 }
-
-
-@media only screen and (max-width: 480px){
-    body{
-        font-size: 10px;
-    }
-
-}
-

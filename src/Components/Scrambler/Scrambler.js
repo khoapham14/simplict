@@ -1,8 +1,7 @@
 import React from 'react';
 import refresh from '../../Assets/Refresh_icon.png';
-import "./Scrambler.css";
-import { Dropdown, Row } from 'react-bootstrap';
-
+import './Scrambler.css';
+import Dropdown from '../UI/Dropdown';
 
 class Scrambler extends React.Component {
   constructor() {
@@ -15,29 +14,36 @@ class Scrambler extends React.Component {
       timer_type: 'Timer',
     };
 
-    this.shuffle = this.shuffle.bind(this)
-    this.scramble = this.scramble.bind(this)
-    this.removeDuplicates = this.removeDuplicates.bind(this)
-    this.getRandomInt = this.getRandomInt.bind(this)
-    this.refreshScramble = this.refreshScramble.bind(this)
-    this.refreshOnSolve = this.refreshOnSolve.bind(this)
-    this.remove4x4Error = this.remove4x4Error.bind(this)
-    this.get3Scramble = this.get3Scramble.bind(this)
-    this.get4Scramble = this.get4Scramble.bind(this)
-    this.get5Scramble = this.get5Scramble.bind(this)
-    this.getMScramble = this.getMScramble.bind(this)
+    this.shuffle = this.shuffle.bind(this);
+    this.scramble = this.scramble.bind(this);
+    this.removeDuplicates = this.removeDuplicates.bind(this);
+    this.getRandomInt = this.getRandomInt.bind(this);
+    this.refreshScramble = this.refreshScramble.bind(this);
+    this.refreshOnSolve = this.refreshOnSolve.bind(this);
+    this.remove4x4Error = this.remove4x4Error.bind(this);
+    this.get3Scramble = this.get3Scramble.bind(this);
+    this.get4Scramble = this.get4Scramble.bind(this);
+    this.get5Scramble = this.get5Scramble.bind(this);
+    this.getMScramble = this.getMScramble.bind(this);
   }
 
   componentDidMount() {
     //Generates an initial scramble
     this.scramble();
-    window.addEventListener("refresh_scr", this.refreshOnSolve, true)
-    window.addEventListener("resize", this.handleWindowSizeChange, true)
+    window.addEventListener('refresh_scr', this.refreshOnSolve, true);
+    window.addEventListener('resize', this.handleWindowSizeChange, true);
+  }
+
+  componentDidUpdate(prevProps) {
+    // Check if refresh prop changed to trigger scramble refresh
+    if (this.props.refresh === true && prevProps.refresh === false) {
+      this.refreshScramble();
+    }
   }
 
   componentWillUnmount() {
     clearTimeout(this.refreshScramble);
-    window.removeEventListener("refresh_scr", this.refreshOnSolve, true)
+    window.removeEventListener('refresh_scr', this.refreshOnSolve, true);
   }
 
   refreshOnSolve() {
@@ -46,30 +52,57 @@ class Scrambler extends React.Component {
     }
   }
 
+  // Helper to set scramble and notify parent
+  setScrambleAndNotify(scramble) {
+    this.setState({ scramble }, () => {
+      // Notify parent of new scramble
+      if (this.props.onScrambleGenerated) {
+        this.props.onScrambleGenerated(scramble);
+      }
+    });
+  }
+
+  // Helper to notify parent of puzzle type change
+  notifyPuzzleTypeChange(puzzleType) {
+    if (this.props.onPuzzleTypeChange) {
+      this.props.onPuzzleTypeChange(puzzleType);
+    }
+  }
+
   get3Scramble() {
-    this.setState({ puzzle_type: "3x3" })
+    this.setState({ puzzle_type: '3x3' }, () => {
+      this.notifyPuzzleTypeChange('3x3');
+    });
     this.refreshScramble();
   }
 
   get4Scramble() {
-    this.setState({ puzzle_type: "4x4" })
+    this.setState({ puzzle_type: '4x4' }, () => {
+      this.notifyPuzzleTypeChange('4x4');
+    });
     this.refreshScramble();
   }
 
   get5Scramble() {
-    this.setState({ puzzle_type: "5x5" })
+    this.setState({ puzzle_type: '5x5' }, () => {
+      this.notifyPuzzleTypeChange('5x5');
+    });
     this.refreshScramble();
   }
 
   getMScramble() {
-    this.setState({ puzzle_type: "Mega" })
+    this.setState({ puzzle_type: 'Mega' }, () => {
+      this.notifyPuzzleTypeChange('Mega');
+    });
     this.refreshScramble();
   }
 
   // Creates an array of sides and shuffles the element randomly
   shuffle() {
-    var scr_array = ["R", "U", "D", "L", "F", "B"];
-    var currentIndex = scr_array.length, temporaryValue, randomIndex;
+    var scr_array = ['R', 'U', 'D', 'L', 'F', 'B'];
+    var currentIndex = scr_array.length,
+      temporaryValue,
+      randomIndex;
 
     while (0 !== currentIndex) {
       randomIndex = Math.floor(Math.random() * currentIndex);
@@ -86,44 +119,45 @@ class Scrambler extends React.Component {
   // Removes 4x4 opposing layers turn from an array to prevent redundant moves
   removeDuplicates(array, len = 0, canDelete = false) {
     if (len < array.length) {
-      if (canDelete) {   // If element is the same as the next one, deletes 1 and go back 1 step. 
+      if (canDelete) {
+        // If element is the same as the next one, deletes 1 and go back 1 step.
         array.splice(len, 1);
         len = len - 2;
       }
 
-      var consecutive = (array[len] === array[len + 1])
+      var consecutive = array[len] === array[len + 1];
       var one_apart;
 
       switch (array[len]) {
-        case "F":
-          if (array[len + 1] === "B" && array[len] === array[len + 2]) {
+        case 'F':
+          if (array[len + 1] === 'B' && array[len] === array[len + 2]) {
             one_apart = true;
           }
           break;
-        case "B":
-          if (array[len + 1] === "F" && array[len] === array[len + 2]) {
-            one_apart = true;
-          }
-          break;
-
-        case "L":
-          if (array[len + 1] === "R" && array[len] === array[len + 2]) {
-            one_apart = true;
-          }
-          break;
-        case "R":
-          if (array[len + 1] === "L" && array[len] === array[len + 2]) {
-            one_apart = true;
-          }
-          break;
-        case "U":
-          if (array[len + 1] === "D" && array[len] === array[len + 2]) {
+        case 'B':
+          if (array[len + 1] === 'F' && array[len] === array[len + 2]) {
             one_apart = true;
           }
           break;
 
-        case "D":
-          if (array[len + 1] === "U" && array[len] === array[len + 2]) {
+        case 'L':
+          if (array[len + 1] === 'R' && array[len] === array[len + 2]) {
+            one_apart = true;
+          }
+          break;
+        case 'R':
+          if (array[len + 1] === 'L' && array[len] === array[len + 2]) {
+            one_apart = true;
+          }
+          break;
+        case 'U':
+          if (array[len + 1] === 'D' && array[len] === array[len + 2]) {
+            one_apart = true;
+          }
+          break;
+
+        case 'D':
+          if (array[len + 1] === 'U' && array[len] === array[len + 2]) {
             one_apart = true;
           }
           break;
@@ -140,11 +174,9 @@ class Scrambler extends React.Component {
         isDeletable = false;
       }
 
-      return this.removeDuplicates(array, len + 1, isDeletable)
+      return this.removeDuplicates(array, len + 1, isDeletable);
     }
-
   }
-
 
   remove4x4Error(array, len = 0, canDelete = false) {
     if (len < array.length) {
@@ -156,33 +188,33 @@ class Scrambler extends React.Component {
       var isDeletable;
 
       switch (array[len]) {
-        case "F":
-          if (array[len + 1] === "B" || array[len - 1] === "B") {
+        case 'F':
+          if (array[len + 1] === 'B' || array[len - 1] === 'B') {
             isDeletable = true;
           }
           break;
-        case "B":
-          if (array[len + 1] === "F" || array[len - 1] === "F") {
+        case 'B':
+          if (array[len + 1] === 'F' || array[len - 1] === 'F') {
             isDeletable = true;
           }
           break;
-        case "R":
-          if (array[len + 1] === "L" || array[len - 1] === "L") {
+        case 'R':
+          if (array[len + 1] === 'L' || array[len - 1] === 'L') {
             isDeletable = true;
           }
           break;
-        case "L":
-          if (array[len + 1] === "R" || array[len - 1] === "R") {
+        case 'L':
+          if (array[len + 1] === 'R' || array[len - 1] === 'R') {
             isDeletable = true;
           }
           break;
-        case "U":
-          if (array[len + 1] === "D" || array[len - 1] === "D") {
+        case 'U':
+          if (array[len + 1] === 'D' || array[len - 1] === 'D') {
             isDeletable = true;
           }
           break;
-        case "D":
-          if (array[len + 1] === "U" || array[len - 1] === "U") {
+        case 'D':
+          if (array[len + 1] === 'U' || array[len - 1] === 'U') {
             isDeletable = true;
           }
           break;
@@ -192,9 +224,8 @@ class Scrambler extends React.Component {
           break;
       }
 
-      return this.remove4x4Error(array, len + 1, isDeletable)
+      return this.remove4x4Error(array, len + 1, isDeletable);
     }
-
   }
 
   // Generates a random number from a range indicated by max.
@@ -205,7 +236,7 @@ class Scrambler extends React.Component {
   // Generate a scramble based on selected puzzle type
   scramble() {
     switch (this.state.puzzle_type) {
-      case "3x3":
+      case '3x3':
         var array_1 = this.shuffle();
         var array_2 = this.shuffle();
         var array_3 = this.shuffle();
@@ -220,97 +251,97 @@ class Scrambler extends React.Component {
         // Using RNG to randomly choose how to turn for each move.
         for (i = 0; i < final_scr.length; i++) {
           switch (final_scr[i]) {
-            case "R":
+            case 'R':
               switch (this.getRandomInt(3)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "R"
+                  final_scr[i] = 'R';
                   break;
                 case 1:
-                  final_scr[i] = "R'"
+                  final_scr[i] = "R'";
                   break;
                 case 2:
-                  final_scr[i] = "R2"
+                  final_scr[i] = 'R2';
                   break;
               }
               break;
-            case "L":
+            case 'L':
               switch (this.getRandomInt(3)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "L"
+                  final_scr[i] = 'L';
                   break;
                 case 1:
-                  final_scr[i] = "L'"
+                  final_scr[i] = "L'";
                   break;
                 case 2:
-                  final_scr[i] = "L2"
-                  break;
-              }
-              break;
-
-            case "U":
-              switch (this.getRandomInt(3)) {
-                default:
-                  break;
-                case 0:
-                  final_scr[i] = "U"
-                  break;
-                case 1:
-                  final_scr[i] = "U'"
-                  break;
-                case 2:
-                  final_scr[i] = "U2"
+                  final_scr[i] = 'L2';
                   break;
               }
               break;
 
-            case "D":
+            case 'U':
               switch (this.getRandomInt(3)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "D"
+                  final_scr[i] = 'U';
                   break;
                 case 1:
-                  final_scr[i] = "D'"
+                  final_scr[i] = "U'";
                   break;
                 case 2:
-                  final_scr[i] = "D2"
+                  final_scr[i] = 'U2';
                   break;
               }
               break;
 
-            case "F":
+            case 'D':
               switch (this.getRandomInt(3)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "F"
+                  final_scr[i] = 'D';
                   break;
                 case 1:
-                  final_scr[i] = "F'"
+                  final_scr[i] = "D'";
                   break;
                 case 2:
-                  final_scr[i] = "F2"
+                  final_scr[i] = 'D2';
                   break;
               }
               break;
 
-            case "B":
+            case 'F':
               switch (this.getRandomInt(3)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "B"
+                  final_scr[i] = 'F';
                   break;
                 case 1:
-                  final_scr[i] = "B'"
+                  final_scr[i] = "F'";
                   break;
                 case 2:
-                  final_scr[i] = "B2"
+                  final_scr[i] = 'F2';
+                  break;
+              }
+              break;
+
+            case 'B':
+              switch (this.getRandomInt(3)) {
+                default:
+                  break;
+                case 0:
+                  final_scr[i] = 'B';
+                  break;
+                case 1:
+                  final_scr[i] = "B'";
+                  break;
+                case 2:
+                  final_scr[i] = 'B2';
                   break;
               }
               break;
@@ -319,12 +350,11 @@ class Scrambler extends React.Component {
           }
         }
 
-        final_scr = final_scr.join(" ");
-        this.setState({ scramble: final_scr });
+        final_scr = final_scr.join(' ');
+        this.setScrambleAndNotify(final_scr);
         break;
 
-
-      case "4x4":
+      case '4x4':
         array_1 = this.shuffle();
         array_2 = this.shuffle();
         array_3 = this.shuffle();
@@ -336,159 +366,157 @@ class Scrambler extends React.Component {
 
         final_scr = array_1.concat(array_2, array_3, array_4, array_5, array_6, array_7, array_8);
 
-
         this.removeDuplicates(final_scr);
         this.remove4x4Error(final_scr);
-
 
         //Using RNG to randomly choose how to turn for each move.
         for (i = 0; i < final_scr.length; i++) {
           switch (final_scr[i]) {
-            case "R":
+            case 'R':
               switch (this.getRandomInt(6)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "R"
+                  final_scr[i] = 'R';
                   break;
                 case 1:
-                  final_scr[i] = "R'"
+                  final_scr[i] = "R'";
                   break;
                 case 2:
-                  final_scr[i] = "R2"
+                  final_scr[i] = 'R2';
                   break;
                 case 3:
-                  final_scr[i] = "Rw"
+                  final_scr[i] = 'Rw';
                   break;
                 case 4:
-                  final_scr[i] = "Rw'"
+                  final_scr[i] = "Rw'";
                   break;
                 case 5:
-                  final_scr[i] = "Rw2"
+                  final_scr[i] = 'Rw2';
                   break;
               }
               break;
-            case "L":
+            case 'L':
               switch (this.getRandomInt(6)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "L"
+                  final_scr[i] = 'L';
                   break;
                 case 1:
-                  final_scr[i] = "L'"
+                  final_scr[i] = "L'";
                   break;
                 case 2:
-                  final_scr[i] = "L2"
+                  final_scr[i] = 'L2';
                   break;
                 case 3:
-                  final_scr[i] = "Lw"
+                  final_scr[i] = 'Lw';
                   break;
                 case 4:
-                  final_scr[i] = "Lw'"
+                  final_scr[i] = "Lw'";
                   break;
                 case 5:
-                  final_scr[i] = "Lw2"
-                  break;
-              }
-              break;
-
-            case "U":
-              switch (this.getRandomInt(6)) {
-                default:
-                  break;
-                case 0:
-                  final_scr[i] = "U"
-                  break;
-                case 1:
-                  final_scr[i] = "U'"
-                  break;
-                case 2:
-                  final_scr[i] = "U2"
-                  break;
-                case 3:
-                  final_scr[i] = "Uw"
-                  break;
-                case 4:
-                  final_scr[i] = "Uw'"
-                  break;
-                case 5:
-                  final_scr[i] = "Uw2"
+                  final_scr[i] = 'Lw2';
                   break;
               }
               break;
 
-            case "D":
+            case 'U':
               switch (this.getRandomInt(6)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "D"
+                  final_scr[i] = 'U';
                   break;
                 case 1:
-                  final_scr[i] = "D'"
+                  final_scr[i] = "U'";
                   break;
                 case 2:
-                  final_scr[i] = "D2"
+                  final_scr[i] = 'U2';
                   break;
                 case 3:
-                  final_scr[i] = "Dw"
+                  final_scr[i] = 'Uw';
                   break;
                 case 4:
-                  final_scr[i] = "Dw'"
+                  final_scr[i] = "Uw'";
                   break;
                 case 5:
-                  final_scr[i] = "Dw2"
+                  final_scr[i] = 'Uw2';
                   break;
               }
               break;
 
-            case "F":
+            case 'D':
               switch (this.getRandomInt(6)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "F"
+                  final_scr[i] = 'D';
                   break;
                 case 1:
-                  final_scr[i] = "F'"
+                  final_scr[i] = "D'";
                   break;
                 case 2:
-                  final_scr[i] = "F2"
+                  final_scr[i] = 'D2';
                   break;
                 case 3:
-                  final_scr[i] = "Fw"
+                  final_scr[i] = 'Dw';
                   break;
                 case 4:
-                  final_scr[i] = "Fw'"
+                  final_scr[i] = "Dw'";
                   break;
                 case 5:
-                  final_scr[i] = "Fw2"
+                  final_scr[i] = 'Dw2';
                   break;
               }
               break;
 
-            case "B":
+            case 'F':
               switch (this.getRandomInt(6)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "B"
+                  final_scr[i] = 'F';
                   break;
                 case 1:
-                  final_scr[i] = "B'"
+                  final_scr[i] = "F'";
                   break;
                 case 2:
-                  final_scr[i] = "B2"
+                  final_scr[i] = 'F2';
                   break;
                 case 3:
-                  final_scr[i] = "Bw"
+                  final_scr[i] = 'Fw';
                   break;
                 case 4:
-                  final_scr[i] = "Bw'"
+                  final_scr[i] = "Fw'";
                   break;
                 case 5:
-                  final_scr[i] = "Bw2"
+                  final_scr[i] = 'Fw2';
+                  break;
+              }
+              break;
+
+            case 'B':
+              switch (this.getRandomInt(6)) {
+                default:
+                  break;
+                case 0:
+                  final_scr[i] = 'B';
+                  break;
+                case 1:
+                  final_scr[i] = "B'";
+                  break;
+                case 2:
+                  final_scr[i] = 'B2';
+                  break;
+                case 3:
+                  final_scr[i] = 'Bw';
+                  break;
+                case 4:
+                  final_scr[i] = "Bw'";
+                  break;
+                case 5:
+                  final_scr[i] = 'Bw2';
                   break;
               }
 
@@ -498,11 +526,11 @@ class Scrambler extends React.Component {
           }
         }
 
-        final_scr = final_scr.join(" ");
-        this.setState({ scramble: final_scr });
+        final_scr = final_scr.join(' ');
+        this.setScrambleAndNotify(final_scr);
         break;
 
-      case "5x5":
+      case '5x5':
         array_1 = this.shuffle();
         array_2 = this.shuffle();
         array_3 = this.shuffle();
@@ -514,160 +542,168 @@ class Scrambler extends React.Component {
         var array_9 = this.shuffle();
         var array_10 = this.shuffle();
 
-        final_scr = array_1.concat(array_2, array_3, array_4, array_5, array_6, array_7, array_8, array_9, array_10);
-
+        final_scr = array_1.concat(
+          array_2,
+          array_3,
+          array_4,
+          array_5,
+          array_6,
+          array_7,
+          array_8,
+          array_9,
+          array_10
+        );
 
         this.removeDuplicates(final_scr);
-
 
         //Using RNG to randomly choose how to turn for each move.
         for (i = 0; i < final_scr.length; i++) {
           switch (final_scr[i]) {
-            case "R":
+            case 'R':
               switch (this.getRandomInt(6)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "R"
+                  final_scr[i] = 'R';
                   break;
                 case 1:
-                  final_scr[i] = "R'"
+                  final_scr[i] = "R'";
                   break;
                 case 2:
-                  final_scr[i] = "R2"
+                  final_scr[i] = 'R2';
                   break;
                 case 3:
-                  final_scr[i] = "Rw"
+                  final_scr[i] = 'Rw';
                   break;
                 case 4:
-                  final_scr[i] = "Rw'"
+                  final_scr[i] = "Rw'";
                   break;
                 case 5:
-                  final_scr[i] = "Rw2"
+                  final_scr[i] = 'Rw2';
                   break;
               }
               break;
-            case "L":
+            case 'L':
               switch (this.getRandomInt(6)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "L"
+                  final_scr[i] = 'L';
                   break;
                 case 1:
-                  final_scr[i] = "L'"
+                  final_scr[i] = "L'";
                   break;
                 case 2:
-                  final_scr[i] = "L2"
+                  final_scr[i] = 'L2';
                   break;
                 case 3:
-                  final_scr[i] = "Lw"
+                  final_scr[i] = 'Lw';
                   break;
                 case 4:
-                  final_scr[i] = "Lw'"
+                  final_scr[i] = "Lw'";
                   break;
                 case 5:
-                  final_scr[i] = "Lw2"
-                  break;
-              }
-              break;
-
-            case "U":
-              switch (this.getRandomInt(6)) {
-                default:
-                  break;
-                case 0:
-                  final_scr[i] = "U"
-                  break;
-                case 1:
-                  final_scr[i] = "U'"
-                  break;
-                case 2:
-                  final_scr[i] = "U2"
-                  break;
-                case 3:
-                  final_scr[i] = "Uw"
-                  break;
-                case 4:
-                  final_scr[i] = "Uw'"
-                  break;
-                case 5:
-                  final_scr[i] = "Uw2"
+                  final_scr[i] = 'Lw2';
                   break;
               }
               break;
 
-            case "D":
+            case 'U':
               switch (this.getRandomInt(6)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "D"
+                  final_scr[i] = 'U';
                   break;
                 case 1:
-                  final_scr[i] = "D'"
+                  final_scr[i] = "U'";
                   break;
                 case 2:
-                  final_scr[i] = "D2"
+                  final_scr[i] = 'U2';
                   break;
                 case 3:
-                  final_scr[i] = "Dw"
+                  final_scr[i] = 'Uw';
                   break;
                 case 4:
-                  final_scr[i] = "Dw'"
+                  final_scr[i] = "Uw'";
                   break;
                 case 5:
-                  final_scr[i] = "Dw2"
+                  final_scr[i] = 'Uw2';
                   break;
               }
               break;
 
-            case "F":
+            case 'D':
               switch (this.getRandomInt(6)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "F"
+                  final_scr[i] = 'D';
                   break;
                 case 1:
-                  final_scr[i] = "F'"
+                  final_scr[i] = "D'";
                   break;
                 case 2:
-                  final_scr[i] = "F2"
+                  final_scr[i] = 'D2';
                   break;
                 case 3:
-                  final_scr[i] = "Fw"
+                  final_scr[i] = 'Dw';
                   break;
                 case 4:
-                  final_scr[i] = "Fw'"
+                  final_scr[i] = "Dw'";
                   break;
                 case 5:
-                  final_scr[i] = "Fw2"
+                  final_scr[i] = 'Dw2';
                   break;
               }
               break;
 
-            case "B":
+            case 'F':
               switch (this.getRandomInt(6)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "B"
+                  final_scr[i] = 'F';
                   break;
                 case 1:
-                  final_scr[i] = "B'"
+                  final_scr[i] = "F'";
                   break;
                 case 2:
-                  final_scr[i] = "B2"
+                  final_scr[i] = 'F2';
                   break;
                 case 3:
-                  final_scr[i] = "Bw"
+                  final_scr[i] = 'Fw';
                   break;
                 case 4:
-                  final_scr[i] = "Bw'"
+                  final_scr[i] = "Fw'";
                   break;
                 case 5:
-                  final_scr[i] = "Bw2"
+                  final_scr[i] = 'Fw2';
+                  break;
+              }
+              break;
+
+            case 'B':
+              switch (this.getRandomInt(6)) {
+                default:
+                  break;
+                case 0:
+                  final_scr[i] = 'B';
+                  break;
+                case 1:
+                  final_scr[i] = "B'";
+                  break;
+                case 2:
+                  final_scr[i] = 'B2';
+                  break;
+                case 3:
+                  final_scr[i] = 'Bw';
+                  break;
+                case 4:
+                  final_scr[i] = "Bw'";
+                  break;
+                case 5:
+                  final_scr[i] = 'Bw2';
                   break;
               }
 
@@ -677,12 +713,12 @@ class Scrambler extends React.Component {
           }
         }
 
-        final_scr = final_scr.join(" ");
-        this.setState({ scramble: final_scr });
+        final_scr = final_scr.join(' ');
+        this.setScrambleAndNotify(final_scr);
         break;
 
-      case "Mega":
-        var m_array_1 = ["R", "D", "R", "D", "R", "D", "R", "D", "R", "D", "U"]
+      case 'Mega':
+        var m_array_1 = ['R', 'D', 'R', 'D', 'R', 'D', 'R', 'D', 'R', 'D', 'U'];
         var m_array_2 = m_array_1;
         var m_array_3 = m_array_1;
         var m_array_4 = m_array_1;
@@ -690,43 +726,42 @@ class Scrambler extends React.Component {
 
         final_scr = m_array_1.concat(m_array_2, m_array_3, m_array_4, m_array_5);
 
-
         //Using RNG to randomly choose how to turn for each move.
         for (i = 0; i < final_scr.length; i++) {
           switch (final_scr[i]) {
-            case "R":
+            case 'R':
               switch (this.getRandomInt(2)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "R++"
+                  final_scr[i] = 'R++';
                   break;
                 case 1:
-                  final_scr[i] = "R--"
+                  final_scr[i] = 'R--';
                   break;
               }
               break;
-            case "D":
+            case 'D':
               switch (this.getRandomInt(2)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "D++"
+                  final_scr[i] = 'D++';
                   break;
                 case 1:
-                  final_scr[i] = "D--"
+                  final_scr[i] = 'D--';
                   break;
               }
               break;
-            case "U":
+            case 'U':
               switch (this.getRandomInt(2)) {
                 default:
                   break;
                 case 0:
-                  final_scr[i] = "U"
+                  final_scr[i] = 'U';
                   break;
                 case 1:
-                  final_scr[i] = "U'"
+                  final_scr[i] = "U'";
                   break;
               }
               break;
@@ -735,15 +770,14 @@ class Scrambler extends React.Component {
           }
         }
 
-        final_scr = final_scr.join(" ");
-        this.setState({ scramble: final_scr });
+        final_scr = final_scr.join(' ');
+        this.setScrambleAndNotify(final_scr);
         break;
 
       default:
         return this.state.scramble;
     }
   }
-
 
   refreshScramble() {
     setTimeout(this.scramble, 500);
@@ -758,81 +792,47 @@ class Scrambler extends React.Component {
 
   render() {
     return (
-      <>
-        {this.props.width > 767 ?
-          <div id="scramble-container">
-            <Dropdown id="scramble-selector">
-              <Dropdown.Toggle variant="outline-light" id="dropdown-text">
-                {this.state.puzzle_type} 
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item id="dropdown-text" onClick={this.get3Scramble}> 3x3 </Dropdown.Item>
-                <Dropdown.Item id="dropdown-text" onClick={this.get4Scramble}> 4x4 </Dropdown.Item>
-                <Dropdown.Item id="dropdown-text" onClick={this.get5Scramble}> 5x5 </Dropdown.Item>
-                <Dropdown.Item id="dropdown-text" onClick={this.getMScramble}> Megaminx </Dropdown.Item>
-              </Dropdown.Menu>
+      <div id="scramble-bar">
+        {/* Left Controls */}
+        <div className="scramble-controls">
+          <Dropdown id="scramble-selector">
+            <Dropdown.Toggle variant="outline-light" id="dropdown-text">
+              {this.state.puzzle_type}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={this.get3Scramble}> 3x3 </Dropdown.Item>
+              <Dropdown.Item onClick={this.get4Scramble}> 4x4 </Dropdown.Item>
+              <Dropdown.Item onClick={this.get5Scramble}> 5x5 </Dropdown.Item>
+              <Dropdown.Item onClick={this.getMScramble}> Megaminx </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
 
-            </Dropdown>
+          <Dropdown id="scramble-selector">
+            <Dropdown.Toggle variant="outline-light" id="dropdown-text">
+              {this.state.timer_type}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => this.setTimerType('Timer')}> Timer </Dropdown.Item>
+              <Dropdown.Item onClick={() => this.setTimerType('Manual')}>
+                {' '}
+                Manual Input{' '}
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
 
-            <Dropdown id="scramble-selector">
-              <Dropdown.Toggle variant="outline-light" id="dropdown-text">
-                {this.state.timer_type}
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item id="dropdown-text" onClick={() => this.setTimerType("Timer")}> Timer </Dropdown.Item>
-                <Dropdown.Item id="dropdown-text" onClick={() => this.setTimerType("Manual")}> Manual Input </Dropdown.Item>
-              </Dropdown.Menu>
+        {/* Scramble Text - Center */}
+        <p id="scramble">{this.state.scramble}</p>
 
-            </Dropdown>
-
-            <div id="scramble">
-              {this.state.scramble}
-              {this.refreshOnSolve()}
-            </div>
-            <div id="refresh-icon-container">
-              <img src={refresh} onClick={this.refreshScramble} id="refresh_icon" alt="refresh_button" />
-            </div>
-          </div>
-          :
-          <div id="scramble-container">
-            <Row>
-              <Dropdown id="scramble-selector">
-                <Dropdown.Toggle variant="outline-light" id="dropdown-text">
-                  {this.state.puzzle_type}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item id="dropdown-text" onClick={this.get3Scramble}> 3x3 </Dropdown.Item>
-                  <Dropdown.Item id="dropdown-text" onClick={this.get4Scramble}> 4x4 </Dropdown.Item>
-                  <Dropdown.Item id="dropdown-text" onClick={this.get5Scramble}> 5x5 </Dropdown.Item>
-                  <Dropdown.Item id="dropdown-text" onClick={this.getMScramble}> Megaminx </Dropdown.Item>
-                </Dropdown.Menu>
-
-              </Dropdown>
-
-              <Dropdown id="scramble-selector">
-                <Dropdown.Toggle variant="outline-light" id="dropdown-text">
-                  {this.state.timer_type}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item id="dropdown-text" onClick={() => this.setTimerType("Timer")}> Timer </Dropdown.Item>
-                  <Dropdown.Item id="dropdown-text" onClick={() => this.setTimerType("Manual")}> Manual Input </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-
-              <div id="refresh-icon-container">
-                <img src={refresh} onClick={this.refreshScramble} id="refresh_icon" alt="refresh_button" />
-              </div>
-            </Row>
-
-            <Row>
-              <p id="scramble">
-                {this.state.scramble}
-                {this.refreshOnSolve()}
-              </p>
-            </Row>
-          </div>
-        }
-      </>
+        {/* Refresh Button - Right */}
+        <div
+          id="refresh-icon-container"
+          onClick={this.refreshScramble}
+          title="Generate new scramble"
+        >
+          <img src={refresh} id="refresh_icon" alt="Generate new scramble" />
+        </div>
+      </div>
     );
   }
 }
