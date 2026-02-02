@@ -1,18 +1,18 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* Maximalism Design Tokens */
 :root {
   /* Base Colors */
-  --color-bg: #0D0D1A;
-  --color-bg-secondary: #1A1A2E;
-  --color-muted: #2D1B4E;
+  --color-bg: #0d0d1a;
+  --color-bg-secondary: #1a1a2e;
+  --color-muted: #2d1b4e;
 
   /* 5 Accent Colors */
-  --color-magenta: #FF3AF2;
-  --color-cyan: #00F5D4;
-  --color-yellow: #FFE600;
-  --color-orange: #FF6B35;
-  --color-purple: #7B2FFF;
+  --color-magenta: #ff3af2;
+  --color-cyan: #00f5d4;
+  --color-yellow: #ffe600;
+  --color-orange: #ff6b35;
+  --color-purple: #7b2fff;
 
   /* Typography */
   --font-display: 'Outfit', sans-serif;
@@ -26,7 +26,7 @@
 
   /* Shadows */
   --shadow-glow: 0 0 20px rgba(255, 58, 242, 0.5);
-  --shadow-multi: 8px 8px 0 #00F5D4, 16px 16px 0 #FFE600;
+  --shadow-multi: 8px 8px 0 #00f5d4, 16px 16px 0 #ffe600;
 }
 
 /* Global Reset */
@@ -43,7 +43,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--color-bg);
-  color: #FFFFFF;
+  color: #ffffff;
   overflow-x: hidden;
 }
 
@@ -83,8 +83,9 @@ body {
 /* Focus Visible - Accessibility */
 :focus-visible {
   outline: 3px solid var(--color-cyan);
-  outline-offset: 3px;
+  outline-offset: 4px;
   border-radius: 4px;
+  box-shadow: 0 0 0 6px rgba(0, 245, 212, 0.15);
 }
 
 /* Selection */

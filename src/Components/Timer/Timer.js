@@ -1,7 +1,7 @@
 import React from 'react';
 import Stats from '../Statistics/Statistics.js';
 import Scrambler from '../Scrambler/Scrambler.js';
-import "./Timer.css";
+import './Timer.css';
 
 // localStorage key
 const STORAGE_KEY = 'simplict_session_v1';
@@ -14,6 +14,7 @@ class Timer extends React.Component {
       time: 0,
       start: 0,
       isOn: false,
+      isReady: false, // Ready state - spacebar held, timer armed
 
       // Solve records (new data model)
       solves: [],
@@ -35,6 +36,9 @@ class Timer extends React.Component {
     this.stopTimer = this.stopTimer.bind(this);
     this.resetTimer = this.resetTimer.bind(this);
     this.handleSpace = this.handleSpace.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleKeyUp = this.handleKeyUp.bind(this);
+    this.handleWindowBlur = this.handleWindowBlur.bind(this);
     this.clearRecord = this.clearRecord.bind(this);
     this.refresh = this.refresh.bind(this);
     this.msToTime = this.msToTime.bind(this);
@@ -61,9 +65,11 @@ class Timer extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    window.addEventListener("resize", this.handleWindowSizeChange, true);
+    window.addEventListener('resize', this.handleWindowSizeChange, true);
     // Note: "spacebar" is not a real event - timer uses div's onKeyUp instead
-    window.addEventListener("spacebar", this.handleSpace, true);
+    window.addEventListener('spacebar', this.handleSpace, true);
+    // Clear ready state if user tabs away while holding spacebar
+    window.addEventListener('blur', this.handleWindowBlur, true);
 
     // Load session from localStorage
     this.loadSession();
@@ -71,8 +77,9 @@ class Timer extends React.Component {
 
   componentWillUnmount() {
     this._isMounted = false;
-    window.removeEventListener("resize", this.handleWindowSizeChange, true);
-    window.removeEventListener("spacebar", this.handleSpace, true);
+    window.removeEventListener('resize', this.handleWindowSizeChange, true);
+    window.removeEventListener('spacebar', this.handleSpace, true);
+    window.removeEventListener('blur', this.handleWindowBlur, true);
 
     // Clear debounce timeout
     if (this.saveTimeoutId) {
@@ -121,15 +128,15 @@ class Timer extends React.Component {
       const sanitizedSolves = data.solves.map(solve => ({
         ...solve,
         scramble: this.sanitizeScramble(solve.scramble),
-        penalizedTimeMs: solve.penalizedTimeMs === null && solve.penalty === 'DNF'
-          ? Infinity
-          : solve.penalizedTimeMs
+        penalizedTimeMs:
+          solve.penalizedTimeMs === null && solve.penalty === 'DNF'
+            ? Infinity
+            : solve.penalizedTimeMs,
       }));
 
       this.setState({
         solves: sanitizedSolves,
       });
-
     } catch (error) {
       console.error('Failed to load session:', error);
       localStorage.removeItem(STORAGE_KEY);
@@ -157,9 +164,9 @@ class Timer extends React.Component {
         solves: this.state.solves.map(solve => ({
           ...solve,
           // Convert Infinity to null for JSON serialization
-          penalizedTimeMs: solve.penalizedTimeMs === Infinity ? null : solve.penalizedTimeMs
+          penalizedTimeMs: solve.penalizedTimeMs === Infinity ? null : solve.penalizedTimeMs,
         })),
-        lastModified: Date.now()
+        lastModified: Date.now(),
       };
 
       const dataStr = JSON.stringify(sessionData);
@@ -170,7 +177,6 @@ class Timer extends React.Component {
       }
 
       localStorage.setItem(STORAGE_KEY, dataStr);
-
     } catch (error) {
       if (error.name === 'QuotaExceededError') {
         console.error('localStorage quota exceeded');
@@ -230,6 +236,67 @@ class Timer extends React.Component {
     }
   }
 
+  // Handle spacebar keydown - sets ready state for visual feedback
+  handleKeyDown(e) {
+    // Ignore if manual input mode is active
+    if (this.state.manualInput) {
+      return;
+    }
+
+    // Ignore if user is typing in an input field
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+      return;
+    }
+
+    // Only respond to spacebar (using modern e.key API)
+    if (e.key !== ' ' && e.code !== 'Space') {
+      return;
+    }
+
+    // Prevent default spacebar scroll behavior
+    e.preventDefault();
+
+    // If timer is idle, set ready state (visual feedback)
+    if (this.state.time === 0 && !this.state.isOn && !this.state.isReady) {
+      this.setState({ isReady: true });
+    }
+  }
+
+  // Handle spacebar keyup - starts/stops timer
+  handleKeyUp(e) {
+    // Ignore if manual input mode is active
+    if (this.state.manualInput) {
+      return;
+    }
+
+    // Only respond to spacebar
+    if (e.key !== ' ' && e.code !== 'Space') {
+      return;
+    }
+
+    // Prevent default
+    e.preventDefault();
+
+    // CASE 1: Timer is ready (spacebar was held) - start timer
+    if (this.state.isReady) {
+      this.setState({ isReady: false }, () => {
+        this.startTimer();
+      });
+    }
+    // CASE 2: Timer is running - stop it
+    else if (this.state.isOn) {
+      this.stopTimer();
+      this.setState({ refresh: true }, () => setTimeout(this.refresh, 500));
+    }
+  }
+
+  // Handle window blur - clears ready state if user tabs away
+  handleWindowBlur() {
+    if (this.state.isReady) {
+      this.setState({ isReady: false });
+    }
+  }
+
   handleHold(e) {
     if (this.state.time === 0) {
       // Fix: wrap in arrow function so it doesn't execute immediately
@@ -241,15 +308,31 @@ class Timer extends React.Component {
     }
   }
 
-  // Formatting time to hh:mm:ss.ms format
+  // Formatting time to hh:mm:ss.cc format (cc is centiseconds)
   msToTime(s) {
     var pad = (n, z = 2) => ('00' + n).slice(-z);
+    // Convert milliseconds to centiseconds (hundredths of a second)
+    var centiseconds = Math.floor((s % 1000) / 10);
     if (s < 60000) {
-      return pad((s % 6e4) / 1000 | 0) + '.' + pad(s % 1000, 2);
+      return pad(((s % 6e4) / 1000) | 0) + '.' + pad(centiseconds, 2);
     } else if (s >= 60000 && s < 3600000) {
-      return pad((s % 3.6e6) / 6e4 | 0) + ':' + pad((s % 6e4) / 1000 | 0) + '.' + pad(s % 1000, 2);
+      return (
+        pad(((s % 3.6e6) / 6e4) | 0) +
+        ':' +
+        pad(((s % 6e4) / 1000) | 0) +
+        '.' +
+        pad(centiseconds, 2)
+      );
     } else if (s >= 3600000) {
-      return pad(s / 3.6e6 | 0) + ':' + pad((s % 3.6e6) / 6e4 | 0) + ':' + pad((s % 6e4) / 1000 | 0) + '.' + pad(s % 1000, 2);
+      return (
+        pad((s / 3.6e6) | 0) +
+        ':' +
+        pad(((s % 3.6e6) / 6e4) | 0) +
+        ':' +
+        pad(((s % 6e4) / 1000) | 0) +
+        '.' +
+        pad(centiseconds, 2)
+      );
     } else {
       alert("Wake up fool! You're taking too long to solve that cube!");
     }
@@ -260,12 +343,16 @@ class Timer extends React.Component {
     this.setState({
       time: this.state.time,
       start: Date.now() - this.state.time,
-      isOn: true
+      isOn: true,
     });
 
-    this.timer = setInterval(() => this.setState({
-      time: this.msToTime(Date.now() - this.state.start)
-    }), 1);
+    this.timer = setInterval(
+      () =>
+        this.setState({
+          time: this.msToTime(Date.now() - this.state.start),
+        }),
+      1
+    );
   }
 
   // Refresh and export time
@@ -292,7 +379,7 @@ class Timer extends React.Component {
   resetTimer() {
     this.setState({
       time: 0,
-      refresh: false
+      refresh: false,
     });
   }
 
@@ -306,7 +393,7 @@ class Timer extends React.Component {
       penalty: 'none',
       penalizedTimeMs: timeMs,
       timestamp: Date.now(),
-      puzzleType: this.state.puzzleType
+      puzzleType: this.state.puzzleType,
     };
 
     this.setState(
@@ -331,7 +418,7 @@ class Timer extends React.Component {
         solves: prev.solves.filter(solve => solve.id !== solveId),
         // Close modal if viewing deleted solve
         showSolveDetail: prev.selectedSolveId === solveId ? false : prev.showSolveDetail,
-        selectedSolveId: prev.selectedSolveId === solveId ? null : prev.selectedSolveId
+        selectedSolveId: prev.selectedSolveId === solveId ? null : prev.selectedSolveId,
       }),
       () => this.debouncedSave()
     );
@@ -367,9 +454,9 @@ class Timer extends React.Component {
             ...solve,
             penalty,
             penalizedTimeMs,
-            displayTime
+            displayTime,
           };
-        })
+        }),
       }),
       () => this.debouncedSave()
     );
@@ -379,7 +466,7 @@ class Timer extends React.Component {
   openSolveDetail(solveId) {
     this.setState({
       showSolveDetail: true,
-      selectedSolveId: solveId
+      selectedSolveId: solveId,
     });
   }
 
@@ -387,7 +474,7 @@ class Timer extends React.Component {
   closeSolveDetail() {
     this.setState({
       showSolveDetail: false,
-      selectedSolveId: null
+      selectedSolveId: null,
     });
   }
 
@@ -418,8 +505,12 @@ class Timer extends React.Component {
 
     if (this.state.width <= 767) {
       return (
-        <div onKeyUp={(e) => this.handleSpace(e)} tabIndex="0" id="timer-container">
-
+        <div
+          onKeyDown={e => this.handleKeyDown(e)}
+          onKeyUp={e => this.handleKeyUp(e)}
+          tabIndex="0"
+          id="timer-container"
+        >
           {/* Passing refresh as prop to Scrambler for scramble sequence to refresh when timer stops */}
           <Scrambler
             refresh={this.state.refresh}
@@ -429,21 +520,27 @@ class Timer extends React.Component {
             onPuzzleTypeChange={this.updatePuzzleType}
           />
 
-          {this.state.manualInput ?
+          {this.state.manualInput ? (
             <>
-              <form onSubmit={(e) => this.handleInputSubmit(e)}>
-                <input id="manual-input" type="text" value={this.state.time} onChange={(e) => this.handleInputChange(e)} />
+              <form onSubmit={e => this.handleInputSubmit(e)}>
+                <input
+                  id="manual-input"
+                  type="text"
+                  value={this.state.time}
+                  onChange={e => this.handleInputChange(e)}
+                />
               </form>
             </>
-            :
+          ) : (
             <p
               id="timer-text"
+              className={this.state.isReady ? 'ready' : ''}
               onPointerDown={this.handleHold}
               style={{ touchAction: 'none', userSelect: 'none' }}
             >
               {this.state.time}
             </p>
-          }
+          )}
 
           {/* Passing solves & callbacks to statistics */}
           <Stats
@@ -462,7 +559,12 @@ class Timer extends React.Component {
       );
     } else {
       return (
-        <div onKeyUp={(e) => this.handleSpace(e)} tabIndex="0" id="timer-container">
+        <div
+          onKeyDown={e => this.handleKeyDown(e)}
+          onKeyUp={e => this.handleKeyUp(e)}
+          tabIndex="0"
+          id="timer-container"
+        >
           {/* Passing refresh as prop to Scrambler for scramble sequence to refresh when timer stops */}
           <div className="w-full">
             <Scrambler
@@ -473,14 +575,23 @@ class Timer extends React.Component {
               onPuzzleTypeChange={this.updatePuzzleType}
             />
           </div>
-          {this.state.manualInput ?
+          {this.state.manualInput ? (
             <>
-              <form onSubmit={(e) => this.handleInputSubmit(e)}>
-                <input id="manual-input" type="text" value={this.state.time} onChange={(e) => this.handleInputChange(e)} />
+              <form onSubmit={e => this.handleInputSubmit(e)}>
+                <input
+                  id="manual-input"
+                  type="text"
+                  value={this.state.time}
+                  onChange={e => this.handleInputChange(e)}
+                />
               </form>
-            </> :
-            <p id="timer-text"> {this.state.time} </p>
-          }
+            </>
+          ) : (
+            <p id="timer-text" className={this.state.isReady ? 'ready' : ''}>
+              {' '}
+              {this.state.time}{' '}
+            </p>
+          )}
 
           {/* Passing solves & callbacks to statistics */}
           <Stats

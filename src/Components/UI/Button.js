@@ -19,6 +19,9 @@ const Button = ({
     transition-all duration-300 ease-out
     border-4 cursor-pointer
     inline-flex items-center justify-center gap-2
+    focus-visible:outline-4 focus-visible:outline-(--color-cyan)
+    focus-visible:outline-offset-4 focus-visible:scale-[1.08]
+    focus-visible:shadow-[0_0_25px_rgba(0,245,212,0.6),_0_0_0_6px_rgba(0,245,212,0.2)]
   `;
 
   const variantClasses = {
@@ -26,41 +29,39 @@ const Button = ({
       border-white text-white bg-transparent
       hover:bg-white hover:text-[var(--color-bg)]
       hover:shadow-glow-cyan hover:scale-105
-      active:scale-95
+      active:scale-[0.92] active:duration-100
     `,
-    'primary': `
+    primary: `
       border-[var(--color-yellow)]
       bg-gradient-to-r from-[var(--color-magenta)] to-[var(--color-purple)]
       text-white
       hover:shadow-max-lg hover:scale-105 hover:border-[var(--color-cyan)]
-      active:scale-95
+      active:scale-[0.92] active:duration-100
     `,
-    'secondary': `
+    secondary: `
       border-[var(--color-orange)]
       bg-gradient-to-r from-[var(--color-cyan)] to-[var(--color-purple)]
       text-white
       hover:shadow-glow-cyan hover:scale-105
-      active:scale-95
+      active:scale-[0.92] active:duration-100
     `,
-    'danger': `
+    danger: `
       border-[var(--color-orange)]
       bg-gradient-to-r from-[var(--color-orange)] to-[var(--color-magenta)]
       text-white
       hover:shadow-glow-magenta hover:scale-105
-      active:scale-95
+      active:scale-[0.92] active:duration-100
     `,
-    'success': `
+    success: `
       border-[var(--color-yellow)]
       bg-gradient-to-r from-[var(--color-cyan)] to-green-500
       text-white
       hover:shadow-glow-cyan hover:scale-105
-      active:scale-95
+      active:scale-[0.92] active:duration-100
     `,
   };
 
-  const disabledClasses = disabled
-    ? 'opacity-50 cursor-not-allowed pointer-events-none'
-    : '';
+  const disabledClasses = disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '';
 
   return (
     <button

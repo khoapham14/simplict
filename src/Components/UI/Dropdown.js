@@ -40,13 +40,14 @@ const Dropdown = ({ children, className = '', id }) => {
     <div ref={dropdownRef} id={id} className={`relative inline-block ${className}`}>
       {React.Children.map(children, child => {
         if (!child) return null;
-        if (child.type === DropdownToggle) {
+        const childType = child.type?.displayName || child.type?.name || child.type;
+        if (childType === 'DropdownToggle' || child.type === DropdownToggle) {
           return React.cloneElement(child, {
             onClick: () => setIsOpen(!isOpen),
             isOpen,
           });
         }
-        if (child.type === DropdownMenu) {
+        if (childType === 'DropdownMenu' || child.type === DropdownMenu) {
           return React.cloneElement(child, {
             isOpen,
             closeDropdown: () => setIsOpen(false),
@@ -88,6 +89,7 @@ const DropdownToggle = ({
 
   return (
     <button
+      type="button"
       onClick={onClick}
       id={id}
       className={`
@@ -138,8 +140,10 @@ const DropdownMenu = ({ children, isOpen, closeDropdown }) => {
         }
       `}</style>
       {React.Children.map(children, child => {
-        if (child && child.type === DropdownItem) {
-          return React.cloneElement(child, { closeDropdown });
+        if (!child) return null;
+        const childType = child.type?.displayName || child.type?.name || child.type;
+        if (childType === 'DropdownItem' || child.type === DropdownItem) {
+          return React.cloneElement(child, { ...child.props, closeDropdown });
         }
         return child;
       })}
@@ -155,6 +159,7 @@ const DropdownItem = ({ children, onClick, closeDropdown, className = '', id }) 
 
   return (
     <button
+      type="button"
       onClick={handleClick}
       id={id}
       className={`
@@ -163,7 +168,9 @@ const DropdownItem = ({ children, onClick, closeDropdown, className = '', id }) 
         hover:bg-gradient-to-r hover:from-[var(--color-magenta)] hover:to-[var(--color-purple)]
         hover:text-white hover:pl-6
         transition-all duration-200
-        focus:outline-none focus:bg-[var(--color-muted)]
+        focus-visible:outline-3 focus-visible:outline-(--color-cyan)
+        focus-visible:outline-offset-[-3px] focus-visible:bg-[rgba(0,245,212,0.15)]
+        focus-visible:border-l-4 focus-visible:border-l-(--color-cyan) focus-visible:pl-7
         ${className}
       `}
       role="menuitem"
@@ -172,6 +179,11 @@ const DropdownItem = ({ children, onClick, closeDropdown, className = '', id }) 
     </button>
   );
 };
+
+// Set displayNames for reliable type checking in production builds
+DropdownToggle.displayName = 'DropdownToggle';
+DropdownMenu.displayName = 'DropdownMenu';
+DropdownItem.displayName = 'DropdownItem';
 
 // Compound Component Pattern
 Dropdown.Toggle = DropdownToggle;
